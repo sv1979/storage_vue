@@ -1,0 +1,219 @@
+@import url('https://fonts.googleapis.com/css?family=Raleway');
+
+@white: #ffffff;
+
+@color1: #1f271b;
+@color2: #19647e;
+@color3: #28afb0;
+@color4: #f4d35e;
+@color5: #ee964b;
+
+@font-family-brand: 'Raleway', sans-serif;
+
+@screen-xs:                  480px;
+@screen-xs-min:              @screen-xs;
+@screen-phone:               @screen-xs-min;
+@screen-sm:                  768px;
+@screen-sm-min:              @screen-sm;
+@screen-tablet:              @screen-sm-min;
+@screen-md:                  992px;
+@screen-md-min:              @screen-md;
+@screen-desktop:             @screen-md-min;
+@screen-lg:                  1200px;
+@screen-lg-min:              @screen-lg;
+@screen-lg-desktop:          @screen-lg-min;
+@screen-xs-max:              (@screen-sm-min - 1);
+@screen-sm-max:              (@screen-md-min - 1);
+@screen-md-max:              (@screen-lg-min - 1);
+
+.no_padding {
+  padding: 0 0;
+}
+
+.no_margin {
+  margin: 0;
+}
+
+b, strong {
+  font-weight: 600;
+}
+
+.flex-display(@direction: row, @wrap: nowrap, @justify: flex-start, @align-items: stretch, @align-content: center) {
+  display: flex;
+  display: -webkit-flex;
+  display: -moz-flex;
+  -webkit-flex-direction: @direction;
+  -moz-flex-direction: @direction;
+  -ms-flex-direction: @direction;
+  flex-direction: @direction;
+  -webkit-flex-wrap: @wrap;
+  -moz-flex-wrap: @wrap;
+  -ms-flex-wrap: @wrap;
+  flex-wrap: @wrap;
+  -webkit-justify-content: @justify;
+  -moz-justify-content: @justify;
+  -ms-justify-content: @justify;
+  justify-content: @justify;
+  -webkit-align-items: @align-items;
+  -moz-align-items: @align-items;
+  -ms-align-items: @align-items;
+  align-items: @align-items;
+  align-content: @align-content;
+  -webkit-align-content: @align-content;
+}
+
+.placeholder(@rules){
+  &::-webkit-input-placeholder{
+    @rules();
+  }
+
+  &:-moz-placeholder{
+    @rules();
+  }
+
+  &::-moz-placeholder{
+    @rules();
+  }
+
+  &:-ms-input-placeholder{
+    @rules();
+  }
+}
+
+.transition(@time:0.3s, @prop:all){
+  -webkit-transition: @prop @time;
+  -moz-transition: @prop @time;
+  -ms-transition: @prop @time;
+  -o-transition: @prop @time;
+  transition: @prop @time;
+}
+
+.transform(@param) {
+  -ms-transform: @param; /* IE 9 */
+  -webkit-transform: @param; /* Chrome, Safari, Opera */
+  transform: @param;
+}
+
+.font(@size:16px, @lh:1.4) {
+  font-size: @size;
+  line-height: @lh;
+}
+
+.animation(@animation) {
+  -webkit-animation: @animation;
+  -o-animation: @animation;
+  animation: @animation;
+}
+
+.keyframes(@name,@rules) {
+
+  @-webkit-keyframes @name {
+    @rules();
+  }
+
+  @-moz-keyframes @name {
+    @rules();
+  }
+
+  @-ms-keyframes @name {
+    @rules();
+  }
+
+  @-o-keyframes @name {
+    @rules();
+  }
+
+  @keyframes @name {
+    @rules();
+  }
+}
+
+.centered {
+  text-align: center;
+}
+
+.white_text {
+  color: @white;
+  a {
+    color: @white !important;
+  }
+}
+
+.font_brand {
+  font-family: @font-family-brand;
+}
+
+.font_bold {
+  font-weight: bold;
+}
+
+.img-responsive {
+  &.full_width {
+    width: 100%;
+  }
+}
+
+[data-link] {
+  cursor: pointer;
+}
+
+.reset_appearance {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  border: none;
+  background-color: transparent;
+}
+.shadow(@rules) {
+  -webkit-box-shadow: @rules;
+  -moz-box-shadow: @rules;
+  box-shadow: @rules;
+}
+
+.bg(@cover: cover, @repeat: no-repeat, @position: center center) {
+  -webkit-background-size: @cover;
+  background-size: @cover;
+  background-repeat: @repeat;
+  background-position: @position;
+}
+
+.nav_link {
+  display: inline-block;
+  width: 18vw;
+  padding: 1.5vw 2vw;
+  text-decoration: none !important;
+  text-transform: uppercase;
+  .font(1.4vw, 1.5);
+  .transition(.4s, background-color);
+  .flex-display(row,nowrap,space-between,center,center);
+  .fal, svg {
+    font-size: 2rem;
+  }
+  &.active {
+    //pointer-events: none;
+  }
+  @media screen and (max-width: @screen-xs-max) {
+    width: 100%;
+    .font(18px, 1.5);
+    padding: 1rem 2rem 1rem 2rem;
+  }
+}
+
+.highlighted {
+  text-shadow: 0 0 2px currentColor;
+}
+
+.styled_input {
+  .reset_appearance;
+  border: 1px solid @color2;
+  display: block;
+  line-height: 2em;
+  padding: 0 1em;
+  .placeholder( {color: @color4;} );
+  &:focus {
+    border-color: @color4;
+    outline-color: @color4;
+    background-color: darken(@color3, 5%);
+  }
+}
+
