@@ -292,6 +292,7 @@ body {
     border-top: 2px solid @color2;
     flex: 0 1 auto;
     text-align: left;
+    min-height: 71px;
   }
   @media screen and (max-width: @screen-xs-max) {
     padding: 1rem 1rem;
@@ -363,6 +364,35 @@ body {
       &:hover {
         outline-color: @color5;
       }
+    }
+  }
+}
+
+.with_edit_button {
+  position: relative;
+}
+
+.tef {
+  &__button{
+    color: @color3;
+    background-color: @color4;
+    padding: .5rem;
+    &:hover {
+      color: @color2;
+      outline-color: @color4!important;
+    }
+  }
+  .form_toggler {
+    opacity: .2;
+  }
+  &:hover {
+    .form_toggler {
+      opacity: 1;
+    }
+  }
+  &.form_shown {
+    .form_toggler {
+      opacity: 1;
     }
   }
 }

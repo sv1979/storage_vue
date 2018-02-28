@@ -4,7 +4,7 @@
                     @searchData="lookForData" @navBack="goBack"/>
         <MainBody :show_class=show_class :filtered_data=filtered_data
                   :active_tab=active_tab :active_article=active_article :active_article_data=current_opened_article
-                  @setTab="changeActiveTab" @setArticle="changeActiveArticle" @save_item = "saveItem"/>
+                  @setTab="changeActiveTab" @setArticle="changeActiveArticle" @save_item = "saveItem" @save_element="saveElement" />
     </div>
 </template>
 
@@ -69,6 +69,27 @@
                             { caption: text, data: [], description: '', normal_value:null, unit: '' }
                             );
                         this.active_article = userdata.folders[this.active_tab].items.length - 1;
+                        break;
+                }
+                console.log('Ajax saving should be here, ',userdata);
+            },
+            saveElement(text,element){
+                let vm = this, userdata = vm.userdata;
+
+                switch(element){
+                    case 1 :
+                        this.$set(
+                            userdata.folders[this.active_tab].items[this.active_article],
+                            "caption",
+                            text
+                        );
+                        break;
+                    case 2:
+                        this.$set(
+                            userdata.folders[this.active_tab].items[this.active_article],
+                            "description",
+                            text
+                        );
                         break;
                 }
                 console.log('Ajax saving should be here, ',userdata);
@@ -150,6 +171,7 @@
                                 "data" : [
                                     { "date" : "18/11/2016", "value": "86.4" },
                                     { "date" : "10/01/2017", "value": "84" },
+                                    { "date" : "", "value": "" },
                                     { "date" : "05/03/2017", "value": "83.9" },
                                     { "date" : "15/03/2017", "value": "84.2" }
                                 ],

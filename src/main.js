@@ -9,11 +9,12 @@ import faPlus from '@fortawesome/fontawesome-pro-light/faPlus'
 import faUndo from '@fortawesome/fontawesome-pro-light/faUndo'
 import faSave from '@fortawesome/fontawesome-pro-light/faSave'
 import faCircle from '@fortawesome/fontawesome-pro-light/faCircle'
+import faPencil from '@fortawesome/fontawesome-pro-light/faPencil'
 import faAngleRight from '@fortawesome/fontawesome-pro-light/faAngleRight'
 import faAngleDoubleRight from '@fortawesome/fontawesome-pro-light/faAngleDoubleRight'
 import faAngleDoubleLeft from '@fortawesome/fontawesome-pro-light/faAngleDoubleLeft'
 
-fontawesome.library.add(faSearch,faPlus,faUndo,faSave, faCircle,faAngleRight,faAngleDoubleRight,faAngleDoubleLeft);
+fontawesome.library.add(faSearch,faPlus,faUndo,faSave, faCircle,faAngleRight,faAngleDoubleRight,faAngleDoubleLeft,faPencil);
 Vue.use(FontAwesomeIcon);
 Vue.component('font-awesome-icon', FontAwesomeIcon);
 Vue.component('font-awesome-layers', FontAwesomeLayers);

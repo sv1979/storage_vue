@@ -216,4 +216,13 @@ b, strong {
     background-color: darken(@color3, 5%);
   }
 }
+textarea.styled {
+  padding: 5px 1rem;
+  .placeholder( {color: @color4;} );
+  &:focus {
+    border-color: @color4;
+    outline-color: @color4;
+    background-color: fade(darken(@color3, 5%),75%);
+  }
+}
 

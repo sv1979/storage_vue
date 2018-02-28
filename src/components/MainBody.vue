@@ -27,9 +27,12 @@
                 <header>No data</header>
             </article>
             <article class="mv_article" v-else>
-                <header v-html="highlightText(active_article_data.caption)"></header>
+                <header class="with_edit_button">
+                    <span v-html="highlightText(active_article_data.caption)"></span>
+                    <TextEditForm v-bind:element="1" v-bind:reference_text=active_article_data.caption @save_element = "saveElement" />
+                </header>
 
-                <div class="table_data">
+                <div class="table_data" v-if="active_article_data.data.length > 0">
                     <table>
                         <thead>
                         <tr>
@@ -58,7 +61,10 @@
                     </table>
                 </div>
 
-                <footer v-html="highlightText(active_article_data.description)"></footer>
+                <footer class="with_edit_button">
+                    <span v-html="highlightText(active_article_data.description)"></span>
+                    <TextEditForm v-bind:element="2" v-bind:reference_text=active_article_data.description @save_element = "saveElement" />
+                </footer>
             </article>
         </main>
     </div>
@@ -67,6 +73,7 @@
 <script>
     import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
     import AddPiece from './AddPiece'
+    import TextEditForm from './TextEditForm'
 
     export default {
         name: 'MainBody',
@@ -97,11 +104,15 @@
             },
             saveItem(text,level){
                 this.$emit('save_item', text,level);
+            },
+            saveElement(text,element){
+                this.$emit('save_element', text,element);
             }
         },
         components: {
             FontAwesomeIcon,
-            AddPiece
+            AddPiece,
+            TextEditForm
         },
         computed: {
 
