@@ -374,13 +374,7 @@ body {
 
 .tef {
   &__button{
-    color: @color3;
-    background-color: @color4;
-    padding: .5rem;
-    &:hover {
-      color: @color2;
-      outline-color: @color4!important;
-    }
+    .styled_button;
   }
   .form_toggler {
     opacity: .2;
@@ -393,6 +387,22 @@ body {
   &.form_shown {
     .form_toggler {
       opacity: 1;
+    }
+  }
+}
+.atl {
+  .flex-display(row-reverse,nowrap,center,stretch,center);
+  &__button {
+    .styled_button;
+    span {
+      padding-right: 15px;
+    }
+  }
+  &__form_here {
+    flex: 1;
+    .flex-display(row,nowrap,center,stretch,center);
+    [type=text] {
+      flex: 1 1 auto;
     }
   }
 }

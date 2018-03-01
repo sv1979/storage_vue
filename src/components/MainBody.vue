@@ -44,21 +44,13 @@
                         </thead>
 
                         <tbody>
-                        <tr v-for="(item,index) in active_article_data.data"  v-bind:key="index">
-                            <td>{{ item.date }}</td>
-                            <td>{{ item.value }} {{ active_article_data.unit }}</td>
-                            <td v-if="active_article_data.normal_value != null">
-                                <!--{{ show_change(active_article_data.data, index) }}-->
-                                <span v-if="item.value < active_article_data.normal_value.min">L</span>
-                                <span v-if="item.value > active_article_data.normal_value.max">H</span>
-                            </td>
-                            <td v-if="active_article_data.normal_value != null">
-                                <span v-if="active_article_data.normal_value.text">{{ active_article_data.normal_value.text }}</span>
-                                <span v-else>{{ active_article_data.normal_value.min }} - {{ active_article_data.normal_value.max }}</span>
-                            </td>
-                        </tr>
+                            <TableLine v-for="(item,index) in active_article_data.data"
+                                   v-bind:key="index" v-bind:activeArticleDataItem="item" v-bind:unit="active_article_data.unit"
+                                   v-bind:normal_value="active_article_data.normal_value" />
                         </tbody>
                     </table>
+
+                    <AddTableLine />
                 </div>
 
                 <footer class="with_edit_button">
@@ -74,6 +66,8 @@
     import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
     import AddPiece from './AddPiece'
     import TextEditForm from './TextEditForm'
+    import TableLine from './TableLine'
+    import AddTableLine from './AddTableLine'
 
     export default {
         name: 'MainBody',
@@ -112,7 +106,9 @@
         components: {
             FontAwesomeIcon,
             AddPiece,
-            TextEditForm
+            TextEditForm,
+            TableLine,
+            AddTableLine
         },
         computed: {
 
