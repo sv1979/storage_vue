@@ -40,17 +40,18 @@
                             <th>Value</th>
                             <th v-if="active_article_data.normal_value != null"></th>
                             <th v-if="active_article_data.normal_value != null">Normal value</th>
+                            <th></th>
                         </tr>
                         </thead>
 
                         <tbody>
                             <TableLine v-for="(item,index) in active_article_data.data"
                                    v-bind:key="index" v-bind:activeArticleDataItem="item" v-bind:unit="active_article_data.unit"
-                                   v-bind:normal_value="active_article_data.normal_value" />
+                                   v-bind:normal_value="active_article_data.normal_value" v-bind:order="index" @save_line="saveLine"/>
                         </tbody>
                     </table>
 
-                    <AddTableLine />
+                    <AddTableLine @save_line="saveLine"/>
                 </div>
 
                 <footer class="with_edit_button">
@@ -101,6 +102,9 @@
             },
             saveElement(text,element){
                 this.$emit('save_element', text,element);
+            },
+            saveLine(date,value,order){
+                this.$emit('save_line', date,value,order);
             }
         },
         components: {
@@ -123,10 +127,13 @@
     table {
         margin-bottom: 1rem;
     }
+    th:last-child {
+        width: 3rem;
+    }
     td:first-child, th:first-child {
         padding-left: 0;
     }
-    td:last-child, th:last-child {
+    td:nth-last-child(2), th:nth-last-child(2), td:last-child, th:last-child {
         text-align: right;
     }
 </style>

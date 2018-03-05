@@ -210,6 +210,11 @@ b, strong {
   line-height: 2em;
   padding: 0 1em;
   .placeholder( {color: @color4;} );
+  [type=text], [type=number]{
+    .reset_appearance;
+    background-color: transparent;
+    border: none;
+  }
   &:focus {
     border-color: @color4;
     outline-color: @color4;
@@ -230,6 +235,9 @@ textarea.styled {
   color: @color3;
   background-color: @color4;
   padding: .5rem;
+  &:focus, &:active {
+    outline: none !important;
+  }
   &:hover {
     color: @color2;
     outline-color: @color4!important;

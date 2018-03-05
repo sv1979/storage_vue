@@ -4,11 +4,13 @@
                     @searchData="lookForData" @navBack="goBack"/>
         <MainBody :show_class=show_class :filtered_data=filtered_data
                   :active_tab=active_tab :active_article=active_article :active_article_data=current_opened_article
-                  @setTab="changeActiveTab" @setArticle="changeActiveArticle" @save_item = "saveItem" @save_element="saveElement" />
+                  @setTab="changeActiveTab" @setArticle="changeActiveArticle" @save_line="saveLine"
+                  @save_item = "saveItem" @save_element="saveElement" />
     </div>
 </template>
 
 <script>
+
     import MainHeader from './MainHeader'
     import MainBody from './MainBody'
 
@@ -94,6 +96,24 @@
                 }
                 console.log('Ajax saving should be here, ',userdata);
             },
+            saveLine(date,value,order=null){
+                let vm = this, userdata = vm.userdata;
+
+                if(order){
+                    this.$set(
+                        userdata.folders[this.active_tab].items[this.active_article].data,
+                        order,
+                        {"date":date,"value":value}
+                    );
+                }
+                else {
+                    this.$set(
+                        userdata.folders[this.active_tab].items[this.active_article].data,
+                        userdata.folders[this.active_tab].items[this.active_article].data.length,
+                        {"date":date,"value":value}
+                    );
+                }
+            },
             goBack(){
                 this.show_class = this.show_class - 1;
             },
@@ -169,10 +189,10 @@
                                 "caption" : "Weight",
                                 "description" : "W123 Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit",
                                 "data" : [
-                                    { "date" : "18/11/2016", "value": "86.4" },
-                                    { "date" : "10/01/2017", "value": "84" },
-                                    { "date" : "05/03/2017", "value": "83.9" },
-                                    { "date" : "15/03/2017", "value": "84.2" }
+                                    { "date" : "2016-02-08", "value": "86.4" },
+                                    { "date" : "2016-09-09", "value": "84" },
+                                    { "date" : "2016-07-10", "value": "83.9" },
+                                    { "date" : "2016-08-01", "value": "84.2" }
                                 ],
                                 "unit" : "kg",
                                 "normal_value" : null
@@ -181,10 +201,10 @@
                                 "caption" : "Haemoglobin",
                                 "description" : "H123 Hhhh Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit",
                                 "data" : [
-                                    { "date" : "20/11/2016", "value": "114" },
-                                    { "date" : "10/01/2017", "value": "112" },
-                                    { "date" : "05/03/2017", "value": "100" },
-                                    { "date" : "10/03/2017", "value": "101" }
+                                    { "date" : "2016-11-08", "value": "114" },
+                                    { "date" : "2016-11-14", "value": "112" },
+                                    { "date" : "2016-12-01", "value": "100" },
+                                    { "date" : "2016-12-18", "value": "101" }
                                 ],
                                 "unit" : "M",
                                 "normal_value" : {
@@ -205,10 +225,10 @@
                                 "caption" : "Blood pressure",
                                 "description" : "Bp 123 Bbb Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit",
                                 "data" : [
-                                    { "date" : "18/11/2016", "value": "100/90" },
-                                    { "date" : "10/01/2017", "value": "110/95" },
-                                    { "date" : "05/03/2017", "value": "140/120" },
-                                    { "date" : "15/03/2017", "value": "105/75" }
+                                    { "date" : "2016-06-08", "value": "100/90" },
+                                    { "date" : "2016-07-08", "value": "110/95" },
+                                    { "date" : "2016-10-10", "value": "140/120" },
+                                    { "date" : "2016-11-01", "value": "105/75" }
                                 ],
                                 "unit" : "xxx",
                                 "normal_value" : {
@@ -226,7 +246,7 @@
         beforeMount: function(){
             let vm = this;
             vm.show_class = 1;
-        }
+        },
     }
 </script>
 

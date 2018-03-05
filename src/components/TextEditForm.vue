@@ -6,7 +6,7 @@
             <button type="submit" v-if="show_form" class="tef__button" v-on:click.prevent="saveText">
                 <font-awesome-icon :icon="['fal','save']" />
             </button>
-            <button class="tef__button form_toggler" v-on:click.prevent="show_form = !show_form">
+            <button class="tef__button form_toggler" v-on:click.prevent="toggleForm()">
                 <font-awesome-icon :icon="['fal','pencil']" v-if="!show_form" />
                 <font-awesome-icon :icon="['fal','undo']" v-else />
             </button>
@@ -21,7 +21,8 @@
         data: () => {
             return {
                 show_form: false,
-                this_piece: null
+                this_piece: null,
+                ref_text: ''
             }
         },
         props: {
@@ -33,6 +34,12 @@
             saveText: function(){
                 this.$emit('save_element',this.this_piece,this.element);
                 this.show_form = false;
+            },
+            toggleForm: function(){
+                this.show_form = !this.show_form;
+                if(this.show_form){
+                    this.this_piece = this.ref_text;
+                }
             }
         },
         updated: function(){

@@ -1,11 +1,13 @@
 
 import Vue from 'vue/dist/vue'
 import Vuex from 'vuex/dist/vuex.common'
-import vMediaQuery from 'v-media-query';
+import vMediaQuery from 'v-media-query'
+import moment from 'vue-moment'
 import fontawesome from '@fortawesome/fontawesome'
 import { FontAwesomeIcon, FontAwesomeLayers } from '@fortawesome/vue-fontawesome'
 import faSearch from '@fortawesome/fontawesome-pro-light/faSearch'
 import faPlus from '@fortawesome/fontawesome-pro-light/faPlus'
+import faTimes from '@fortawesome/fontawesome-pro-light/faTimes'
 import faUndo from '@fortawesome/fontawesome-pro-light/faUndo'
 import faSave from '@fortawesome/fontawesome-pro-light/faSave'
 import faCircle from '@fortawesome/fontawesome-pro-light/faCircle'
@@ -14,12 +16,13 @@ import faAngleRight from '@fortawesome/fontawesome-pro-light/faAngleRight'
 import faAngleDoubleRight from '@fortawesome/fontawesome-pro-light/faAngleDoubleRight'
 import faAngleDoubleLeft from '@fortawesome/fontawesome-pro-light/faAngleDoubleLeft'
 
-fontawesome.library.add(faSearch,faPlus,faUndo,faSave, faCircle,faAngleRight,faAngleDoubleRight,faAngleDoubleLeft,faPencil);
+fontawesome.library.add(faSearch,faPlus,faUndo,faSave,faTimes, faCircle,faAngleRight,faAngleDoubleRight,faAngleDoubleLeft,faPencil);
 Vue.use(FontAwesomeIcon);
 Vue.component('font-awesome-icon', FontAwesomeIcon);
 Vue.component('font-awesome-layers', FontAwesomeLayers);
 Vue.use(Vuex);
 Vue.use(vMediaQuery);
+Vue.use(moment);
 
 import rainfield from './assets/rainfield.js';
 import 'normalize.css';
@@ -27,6 +30,7 @@ import './assets/styles.less';
 
 import App from './App.vue';
 Vue.config.productionTip = false;
+
 
 const store = new Vuex.Store({
     state: {
