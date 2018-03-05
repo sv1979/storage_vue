@@ -11,7 +11,7 @@
                 <datepicker v-model="this_date" ref="itemdate" v-bind:class="['styled_input', date_invalid?'form_shown':'']"
                             placeholder="Select Date" :monday-first="true" calendar-class="atl__datepicker" format="dd MMM yyyy"
                             :disabled="this.disabled_future" :value="initial_date"/>
-                <input type="text" v-model="this_val" ref="itemval" class="styled_input" required />
+                <input type="text" v-model="this_val" ref="itemval" class="styled_input" required v-on:keypress.enter="saveLine"/>
 
                 <button class="atl__button" type="submit" v-on:click="saveLine">Save
                     <font-awesome-icon :icon="['fal','save']" />

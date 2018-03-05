@@ -18,7 +18,7 @@
     </tr>
     <tr v-else>
         <td :colspan="normal_value != null ? 5 : 3">
-            <AddTableLine :initial_date='activeArticleDataItem.date' :initial_val='activeArticleDataItem.value' :cell_order='order'
+            <AddTableLine :initial_date='activeArticleDataItem.date.toString()' :initial_val='activeArticleDataItem.value' :cell_order='order'
                           :initial_show="true" @hide_form="hideForm" @save_line="save_cell"/>
         </td>
     </tr>

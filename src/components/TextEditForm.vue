@@ -21,8 +21,7 @@
         data: () => {
             return {
                 show_form: false,
-                this_piece: null,
-                ref_text: ''
+                this_piece: null
             }
         },
         props: {
