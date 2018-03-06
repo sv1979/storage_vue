@@ -20,7 +20,7 @@
         <td :colspan="normal_value != null ? 5 : 3">
             <AddTableLine :initial_date='activeArticleDataItem.date.toString()' :initial_val='activeArticleDataItem.value' :cell_order='order'
                           :initial_show="true" :show_reorder="true" :lastloop="lastloop"
-                          @hide_form="hideForm" @save_line="save_cell" @line_up="lineUp" @line_down="lineDown" />
+                          @hide_form="hideForm" @save_line="save_cell" @line_up="lineUp" @line_down="lineDown" @line_remove="lineRemove" />
         </td>
     </tr>
 </template>
@@ -60,6 +60,9 @@
             },
             lineDown: function(order){
                 this.$emit('line_down',order);
+            },
+            lineRemove: function(order){
+                this.$emit('line_remove',order);
             }
         }
     }

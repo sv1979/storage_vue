@@ -50,7 +50,7 @@
                             <TableLine v-for="(item,index) in active_article_data.data"
                                        v-bind:key="index" v-bind:activeArticleDataItem="item" v-bind:unit="active_article_data.unit"
                                        v-bind:normal_value="active_article_data.normal_value" v-bind:order="index" :lastloop="index===active_article_data.data.length - 1"
-                                       @save_line="saveLine" @line_up="lineUp" @line_down="lineDown"/>
+                                       @save_line="saveLine" @line_up="lineUp" @line_down="lineDown" @line_remove="lineRemove"/>
                         </draggable>
 
                     </table>
@@ -116,6 +116,9 @@
             },
             lineDown(order){
                 this.$emit('line_down', order);
+            },
+            lineRemove(order){
+                this.$emit('line_remove', order);
             },
             saveNewPositions: function(){
                 this.$emit('save_all_data')

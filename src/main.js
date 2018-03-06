@@ -1,10 +1,9 @@
-
 import Vue from 'vue/dist/vue'
 import Vuex from 'vuex/dist/vuex.common'
 import vMediaQuery from 'v-media-query'
 import moment from 'vue-moment'
 import fontawesome from '@fortawesome/fontawesome'
-import { FontAwesomeIcon, FontAwesomeLayers } from '@fortawesome/vue-fontawesome'
+import {FontAwesomeIcon, FontAwesomeLayers} from '@fortawesome/vue-fontawesome'
 import faSearch from '@fortawesome/fontawesome-pro-light/faSearch'
 import faPlus from '@fortawesome/fontawesome-pro-light/faPlus'
 import faTimes from '@fortawesome/fontawesome-pro-light/faTimes'
@@ -17,9 +16,10 @@ import faAngleDoubleRight from '@fortawesome/fontawesome-pro-light/faAngleDouble
 import faAngleDoubleLeft from '@fortawesome/fontawesome-pro-light/faAngleDoubleLeft'
 import faChevronDoubleUp from '@fortawesome/fontawesome-pro-light/faChevronDoubleUp'
 import faChevronDoubleDown from '@fortawesome/fontawesome-pro-light/faChevronDoubleDown'
+import faTrashAlt from '@fortawesome/fontawesome-pro-light/faTrashAlt'
 
-fontawesome.library.add(faSearch,faPlus,faUndo,faSave,faTimes, faCircle,faAngleRight,faAngleDoubleRight,faAngleDoubleLeft,faPencil,
-    faChevronDoubleUp,faChevronDoubleDown);
+fontawesome.library.add(faSearch, faPlus, faUndo, faSave, faTimes, faCircle, faAngleRight, faAngleDoubleRight, faAngleDoubleLeft, faPencil,
+    faChevronDoubleUp, faChevronDoubleDown, faTrashAlt);
 Vue.use(FontAwesomeIcon);
 Vue.component('font-awesome-icon', FontAwesomeIcon);
 Vue.component('font-awesome-layers', FontAwesomeLayers);
@@ -32,6 +32,7 @@ import 'normalize.css';
 import './assets/styles.less';
 
 import App from './App.vue';
+
 Vue.config.productionTip = false;
 
 
@@ -42,18 +43,18 @@ const store = new Vuex.Store({
         username: 'Guest'
     },
     actions: {
-        change_interface_action: ({commit}, new_id)=>{
+        change_interface_action: ({commit}, new_id) => {
             commit("change_interface", new_id);
         },
-        set_username_action: ({commit}, username)=>{
+        set_username_action: ({commit}, username) => {
             commit("set_username", username);
         }
     },
     mutations: {
-        change_interface (state, i_id) {
+        change_interface(state, i_id) {
             state.current_interface = i_id;
         },
-        set_username (state, username) {
+        set_username(state, username) {
             state.username = username;
         }
     },
@@ -68,8 +69,8 @@ const store = new Vuex.Store({
 });
 
 new Vue({
-  store,
-  render: h => h(App)
+    store,
+    render: h => h(App)
 }).$mount('#app');
 
 rainfield();

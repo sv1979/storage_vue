@@ -22,10 +22,12 @@
                 <button class="atl__button" v-if="show_reorder && cell_order > 0" v-on:click.prevent="lineUp" title="Move Up">
                     <font-awesome-icon :icon="['fal','chevron-double-up']" />
                 </button>
-                <button class="atl__button" v-if="show_reorder && !lastloop" v-on:click.prevent="lineDown" title="Move Down">
+                <button class="atl__button " v-if="show_reorder && !lastloop" v-on:click.prevent="lineDown" title="Move Down">
                     <font-awesome-icon :icon="['fal','chevron-double-down']" />
                 </button>
-
+                <button class="atl__button danger_bg" v-if="show_reorder" v-on:click.prevent="lineRemove" title="Remove">
+                    <font-awesome-icon :icon="['fal','trash-alt']" />
+                </button>
             </div>
         </form>
     </div>
@@ -98,6 +100,10 @@
             },
             lineDown: function(){
                 this.$emit('line_down', this.cellorder);
+                this.$emit('hide_form');
+            },
+            lineRemove: function(){
+                this.$emit('line_remove', this.cellorder);
                 this.$emit('hide_form');
             }
         },

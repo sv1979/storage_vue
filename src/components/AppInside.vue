@@ -5,7 +5,8 @@
         <MainBody :show_class=show_class :filtered_data=filtered_data
                   :active_tab=active_tab :active_article=active_article :active_article_data=current_opened_article
                   @setTab="changeActiveTab" @setArticle="changeActiveArticle" @save_line="saveLine"
-                  @save_item = "saveItem" @save_element="saveElement" @line_up="lineUp" @line_down="lineDown" @save_all_data="saveAllData"/>
+                  @save_item = "saveItem" @save_element="saveElement" @line_up="lineUp" @line_down="lineDown"
+                  @line_remove="lineRemove" @save_all_data="saveAllData"/>
     </div>
 </template>
 
@@ -131,6 +132,11 @@
                     this.userdata.folders[vm.active_tab].items[vm.active_article].data =
                         Object.assign([], this.userdata.folders[vm.active_tab].items[vm.active_article].data,data_temp);
                 }
+                this.saveAllData();
+            },
+            lineRemove(order){
+                let vm = this, userdata = vm.userdata;
+                userdata.folders[this.active_tab].items[this.active_article].data.splice(order,1);
                 this.saveAllData();
             },
             saveAllData(){
