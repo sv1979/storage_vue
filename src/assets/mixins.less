@@ -184,11 +184,21 @@ b, strong {
   padding: 1.5vw 2vw;
   text-decoration: none !important;
   text-transform: uppercase;
+  position: relative;
   .font(1.4vw, 1.5);
   .transition(.4s, background-color);
   .flex-display(row,nowrap,space-between,center,center);
   .fal, svg {
     font-size: 2rem;
+  }
+  .remove_item {
+    position: absolute;
+    top: 5px;
+    left: 0;
+    padding: 2px 5px;
+    .fal, svg {
+      font-size: 1rem;
+    }
   }
   &.active {
     //pointer-events: none;

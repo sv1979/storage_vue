@@ -242,6 +242,7 @@ body {
 .mv_aside {
   grid-area: aside;
   background-color: darken(@color3, 10%);
+  .flex-display(column,nowrap,space-between,flex-start,center);
   a {
     .nav_link;
     color: @color4;
@@ -258,6 +259,7 @@ body {
 .mv_subnav {
   grid-area: subnav;
   background-color: darken(@color3, 5%);
+  .flex-display(column,nowrap,space-between,flex-start,center);
   a {
     .nav_link;
     color: @color4;
@@ -269,6 +271,10 @@ body {
       background-color: @color3;
     }
   }
+}
+
+.subnav_inner {
+  width: 100%;
 }
 
 .mv_main {

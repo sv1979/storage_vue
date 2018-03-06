@@ -1,27 +1,51 @@
 <template>
     <div v-bind:class="[ 'mv', 'show_class_'+ show_class ]">
         <aside class="mv_aside">
-            <draggable v-model="filtered_data.folders" @end="saveNewPositions">
-                <a href="#"
-                   v-for="(item,index) in filtered_data.folders"
-                   v-on:click="set_active_tab(index)" v-bind:key=index
-                   v-bind:class="{ active: index===active_tab }"><span v-html="highlightText(item.title)"></span>
-                    <font-awesome-icon :icon="[ 'fal', index===active_tab ? 'angle-double-right' : 'angle-right' ]" />
-                </a>
-            </draggable>
-            <AddPiece button_text="Add item" v-bind:level="1" @save_piece = "saveItem" />
+            <div class="subnav_inner">
+                <draggable v-model="filtered_data.folders" @end="saveNewPositions">
+                    <a href="#"
+                       v-for="(item,index) in filtered_data.folders"
+                       v-on:click="set_active_tab(index)" v-bind:key=index
+                       v-bind:class="{ active: index===active_tab }"><span v-html="highlightText(item.title)"></span>
+                        <font-awesome-icon :icon="[ 'fal', index===active_tab ? 'angle-double-right' : 'angle-right' ]" />
+
+                        <button class="styled_button danger_bg remove_item" v-if="edit_nav === 1">
+                            <font-awesome-icon :icon="['fal','times']" />
+                        </button>
+                    </a>
+                </draggable>
+                <AddPiece button_text="Add item" v-bind:level="1" @save_piece = "saveItem" />
+            </div>
+            <div class="list_controls">
+                <button class="styled_button" v-on:click="editNav(1)">
+                    <font-awesome-icon :icon="['fal','pencil']" />
+                </button>
+            </div>
         </aside>
 
         <aside class="mv_subnav">
-            <draggable v-model="filtered_data.folders[active_tab].items" @end="saveNewPositions">
-                <a href="#"
-                   v-for="(item,index) in filtered_data.folders[active_tab].items"
-                   v-on:click="set_active_article(index)" v-bind:key=index
-                   v-bind:class="{ active: index===active_article }"><span v-html="highlightText(item.caption)"></span>
-                    <font-awesome-icon :icon="[ 'fal', index===active_article ? 'angle-double-right' : 'angle-right' ]" />
-                </a>
-            </draggable>
-            <AddPiece button_text="Add item" v-bind:level="2" @save_piece = "saveItem" />
+            <div class="subnav_inner">
+                <draggable v-model="filtered_data.folders[active_tab].items" @end="saveNewPositions">
+                    <a href="#"
+                       v-for="(item,index) in filtered_data.folders[active_tab].items"
+                       v-on:click="set_active_article(index)" v-bind:key=index
+                       v-bind:class="{ active: index===active_article }"><span v-html="highlightText(item.caption)"></span>
+                        <font-awesome-icon :icon="[ 'fal', index===active_article ? 'angle-double-right' : 'angle-right' ]" />
+
+                        <button class="styled_button danger_bg remove_item" v-if="edit_nav === 2">
+                            <font-awesome-icon :icon="['fal','times']" />
+                        </button>
+                    </a>
+                </draggable>
+                <AddPiece button_text="Add item" v-bind:level="2" @save_piece = "saveItem" />
+            </div>
+
+            <div class="list_controls">
+                <button class="styled_button" v-on:click="editNav(2)">
+                    <font-awesome-icon :icon="['fal','pencil']" />
+                </button>
+            </div>
+
         </aside>
 
         <main class="mv_main">
@@ -34,7 +58,7 @@
                     <TextEditForm v-bind:element="1" v-bind:reference_text=active_article_data.caption @save_element = "saveElement" />
                 </header>
 
-                <div class="table_data" v-if="active_article_data.data.length > 0">
+                <div class="table_data" >
                     <table>
                         <thead>
                         <tr>
@@ -82,7 +106,8 @@
         },
         data: () => {
             return {
-                this_search: null
+                this_search: null,
+                edit_nav: 0
             }
         },
         props: {
@@ -122,6 +147,14 @@
             },
             saveNewPositions: function(){
                 this.$emit('save_all_data')
+            },
+            editNav: function(order){
+                switch(order){
+                    case 1:
+                        this.edit_nav = this.edit_nav === 1 ? 0 : order; break;
+                    case 2:
+                        this.edit_nav = this.edit_nav === 2 ? 0 : order; break;
+                }
             }
         },
         components: {

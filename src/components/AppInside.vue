@@ -53,7 +53,7 @@
                 this.show_class = 3;
             },
             saveItem(text,level){
-                let vm = this, userdata = vm.userdata;
+                let vm = this, userdata = vm.filtered_data;
 
                 switch(level){
                     case 1 :
@@ -77,7 +77,7 @@
                 this.saveAllData();
             },
             saveElement(text,element){
-                let vm = this, userdata = vm.userdata;
+                let vm = this, userdata = vm.filtered_data;
 
                 switch(element){
                     case 1 :
@@ -98,7 +98,7 @@
                 this.saveAllData();
             },
             saveLine(date,value,order=null){
-                let vm = this, userdata = vm.userdata;
+                let vm = this, userdata = vm.filtered_data;
 
                 if(order===null){
                     userdata.folders[this.active_tab].items[this.active_article].data.push({"date":date,"value":value});
@@ -113,7 +113,7 @@
                 this.saveAllData();
             },
             lineUp(order){
-                let vm = this, userdata = vm.userdata;
+                let vm = this, userdata = vm.filtered_data;
 
                 if(order){
                     let data_temp = this.swap(userdata.folders[vm.active_tab].items[vm.active_article].data, order-1, order);
@@ -124,7 +124,7 @@
                 this.saveAllData();
             },
             lineDown(order){
-                let vm = this, userdata = vm.userdata;
+                let vm = this, userdata = vm.filtered_data;
 
                 if( order < userdata.folders[vm.active_tab].items[vm.active_article].data.length - 1 ){
                     let data_temp = this.swap(userdata.folders[vm.active_tab].items[vm.active_article].data, order+1, order);
@@ -135,7 +135,7 @@
                 this.saveAllData();
             },
             lineRemove(order){
-                let vm = this, userdata = vm.userdata;
+                let vm = this, userdata = vm.filtered_data;
                 userdata.folders[this.active_tab].items[this.active_article].data.splice(order,1);
                 this.saveAllData();
             },
@@ -171,7 +171,7 @@
             filtered_data: function(){
                 let vm = this, result = {}, heap = [];
 
-                for ( let val of vm.userdata.folders ) {
+                for ( let val of this.userdata.folders ) {
                     if (val.title.toLowerCase().indexOf(vm.search_term) > -1) {
                         heap = [...heap, val]
                     } else {
