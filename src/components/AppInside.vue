@@ -5,7 +5,7 @@
         <MainBody :show_class=show_class :filtered_data=filtered_data
                   :active_tab=active_tab :active_article=active_article :active_article_data=current_opened_article
                   @setTab="changeActiveTab" @setArticle="changeActiveArticle" @save_line="saveLine"
-                  @save_item = "saveItem" @save_element="saveElement" />
+                  @save_item = "saveItem" @save_element="saveElement" @line_up="lineUp" @line_down="lineDown"/>
     </div>
 </template>
 
@@ -99,19 +99,35 @@
             saveLine(date,value,order=null){
                 let vm = this, userdata = vm.userdata;
 
-                if(order){
+                if(order===null){
+                    userdata.folders[this.active_tab].items[this.active_article].data.push({"date":date,"value":value});
+                }
+                else {
                     this.$set(
                         userdata.folders[this.active_tab].items[this.active_article].data,
                         order,
                         {"date":date,"value":value}
                     );
                 }
-                else {
-                    this.$set(
-                        userdata.folders[this.active_tab].items[this.active_article].data,
-                        userdata.folders[this.active_tab].items[this.active_article].data.length,
-                        {"date":date,"value":value}
-                    );
+            },
+            lineUp(order){
+                let vm = this, userdata = vm.userdata;
+
+                if(order){
+                    let data_temp = this.swap(userdata.folders[vm.active_tab].items[vm.active_article].data, order-1, order);
+
+                    this.userdata.folders[vm.active_tab].items[vm.active_article].data =
+                        Object.assign([], this.userdata.folders[vm.active_tab].items[vm.active_article].data,data_temp);
+                }
+            },
+            lineDown(order){
+                let vm = this, userdata = vm.userdata;
+
+                if( order < userdata.folders[vm.active_tab].items[vm.active_article].data.length - 1 ){
+                    let data_temp = this.swap(userdata.folders[vm.active_tab].items[vm.active_article].data, order+1, order);
+
+                    this.userdata.folders[vm.active_tab].items[vm.active_article].data =
+                        Object.assign([], this.userdata.folders[vm.active_tab].items[vm.active_article].data,data_temp);
                 }
             },
             goBack(){
@@ -127,6 +143,12 @@
             jsUcfirst(string)
             {
                 return string.charAt(0).toUpperCase() + string.slice(1);
+            },
+            swap(obj,order1,order2){
+                let a = obj[order2];
+                obj[order2] = obj[order1];
+                obj[order1] = a;
+                return obj;
             },
             componentDidMount(){
 
@@ -248,6 +270,7 @@
             vm.show_class = 1;
         },
     }
+
 </script>
 
 <style scoped>

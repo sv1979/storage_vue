@@ -19,7 +19,8 @@
     <tr v-else>
         <td :colspan="normal_value != null ? 5 : 3">
             <AddTableLine :initial_date='activeArticleDataItem.date.toString()' :initial_val='activeArticleDataItem.value' :cell_order='order'
-                          :initial_show="true" @hide_form="hideForm" @save_line="save_cell"/>
+                          :initial_show="true" :show_reorder="true" :lastloop="lastloop"
+                          @hide_form="hideForm" @save_line="save_cell" @line_up="lineUp" @line_down="lineDown" />
         </td>
     </tr>
 </template>
@@ -34,11 +35,12 @@
             activeArticleDataItem:Object,
             unit:String,
             normal_value:Object,
-            order: Number
+            order: Number,
+            lastloop: Boolean
         },
         data: () => {
             return {
-                show_form: false,
+                show_form: !!this.openline,
                 this_date: null,
                 this_val:  null,
                 date_invalid: false,
@@ -52,6 +54,12 @@
             },
             save_cell: function(date,value,order){
                 this.$emit('save_line',date,value,order);
+            },
+            lineUp: function(order){
+                this.$emit('line_up', order);
+            },
+            lineDown: function(order){
+                this.$emit('line_down',order);
             }
         }
     }

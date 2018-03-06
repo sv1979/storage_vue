@@ -13,19 +13,28 @@
                             :disabled="this.disabled_future" :value="initial_date"/>
                 <input type="text" v-model="this_val" ref="itemval" class="styled_input" required v-on:keypress.enter="saveLine"/>
 
+                <button class="atl__button" type="reset" title="Reset form">
+                    <font-awesome-icon :icon="['fal','times']" />
+                </button>
                 <button class="atl__button" type="submit" v-on:click="saveLine">Save
                     <font-awesome-icon :icon="['fal','save']" />
                 </button>
-                <button class="atl__button" type="reset" >
-                    <font-awesome-icon :icon="['fal','times']" />
+                <button class="atl__button" v-if="show_reorder && cell_order > 0" v-on:click.prevent="lineUp" title="Move Up">
+                    <font-awesome-icon :icon="['fal','chevron-double-up']" />
                 </button>
+                <button class="atl__button" v-if="show_reorder && !lastloop" v-on:click.prevent="lineDown" title="Move Down">
+                    <font-awesome-icon :icon="['fal','chevron-double-down']" />
+                </button>
+
             </div>
         </form>
     </div>
 </template>
+
 <script>
     import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
     import Datepicker from 'vuejs-datepicker'
+    import moment from 'moment'
 
     export default {
         name: 'AddTableLine',
@@ -33,7 +42,9 @@
             initial_date: String,
             initial_val: String,
             initial_show: Boolean,
-            cell_order: Number
+            cell_order: Number,
+            show_reorder:Boolean,
+            lastloop:Boolean
         },
         data: () => {
             return {
@@ -58,7 +69,11 @@
                     this.val_invalid = true
                 }
                 else {
-                    this.$emit('save_line',this.this_date,this.this_val, this.cellorder);
+                    let date_string = (typeof this.this_date === 'object') ?
+                        moment(this.this_date).format('YYYY-MM-DD'):
+                        this.this_date;
+
+                    this.$emit('save_line', date_string, this.this_val, this.cellorder);
                     this.show_form = false;
                     this.date_invalid = false;
                     this.val_invalid = false;
@@ -76,6 +91,14 @@
             },
             hideForm: function(){
                 this.$emit('hide_form');
+            },
+            lineUp: function(){
+                this.$emit('line_up',this.cellorder);
+                this.$emit('hide_form');
+            },
+            lineDown: function(){
+                this.$emit('line_down', this.cellorder);
+                this.$emit('hide_form');
             }
         },
         watch: {
@@ -92,7 +115,7 @@
             this.this_date = this.initial_date ? this.initial_date.toString() : null;
             this.this_val = this.initial_val !== null ? this.initial_val : null;
             this.show_form = this.initial_show !== null ? this.initial_show : false;
-            this.cellorder = this.cell_order ? this.cell_order : null;
+            this.cellorder = this.cell_order>-1 ? this.cell_order : null;
         },
     }
 </script>
