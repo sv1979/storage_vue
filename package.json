@@ -16,6 +16,7 @@
     "v-media-query": "^1.0.3",
     "vue": "^2.5.13",
     "vue-moment": "^3.2.0",
+    "vuedraggable": "^2.16.0",
     "vuejs-datepicker": "^0.9.26",
     "vuex": "^3.0.1"
   },

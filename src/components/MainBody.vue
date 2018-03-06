@@ -1,24 +1,26 @@
 <template>
     <div v-bind:class="[ 'mv', 'show_class_'+ show_class ]">
         <aside class="mv_aside">
-            <a href="#"
-               v-for="(item,index) in filtered_data.folders"
-               v-on:click="set_active_tab(index)" v-bind:key=index
-               v-bind:class="{ active: index===active_tab }"><span v-html="highlightText(item.title)"></span>
-                <font-awesome-icon :icon="[ 'fal', index===active_tab ? 'angle-double-right' : 'angle-right' ]" />
-            </a>
-
+            <draggable v-model="filtered_data.folders" @end="saveNewPositions">
+                <a href="#"
+                   v-for="(item,index) in filtered_data.folders"
+                   v-on:click="set_active_tab(index)" v-bind:key=index
+                   v-bind:class="{ active: index===active_tab }"><span v-html="highlightText(item.title)"></span>
+                    <font-awesome-icon :icon="[ 'fal', index===active_tab ? 'angle-double-right' : 'angle-right' ]" />
+                </a>
+            </draggable>
             <AddPiece button_text="Add item" v-bind:level="1" @save_piece = "saveItem" />
         </aside>
 
         <aside class="mv_subnav">
-            <a href="#"
-               v-for="(item,index) in filtered_data.folders[active_tab].items"
-               v-on:click="set_active_article(index)" v-bind:key=index
-               v-bind:class="{ active: index===active_article }"><span v-html="highlightText(item.caption)"></span>
-                <font-awesome-icon :icon="[ 'fal', index===active_article ? 'angle-double-right' : 'angle-right' ]" />
-            </a>
-
+            <draggable v-model="filtered_data.folders[active_tab].items" @end="saveNewPositions">
+                <a href="#"
+                   v-for="(item,index) in filtered_data.folders[active_tab].items"
+                   v-on:click="set_active_article(index)" v-bind:key=index
+                   v-bind:class="{ active: index===active_article }"><span v-html="highlightText(item.caption)"></span>
+                    <font-awesome-icon :icon="[ 'fal', index===active_article ? 'angle-double-right' : 'angle-right' ]" />
+                </a>
+            </draggable>
             <AddPiece button_text="Add item" v-bind:level="2" @save_piece = "saveItem" />
         </aside>
 
@@ -44,12 +46,13 @@
                         </tr>
                         </thead>
 
-                        <tbody>
+                        <draggable v-model="active_article_data.data" :element="'tbody'" @end="saveNewPositions">
                             <TableLine v-for="(item,index) in active_article_data.data"
-                                   v-bind:key="index" v-bind:activeArticleDataItem="item" v-bind:unit="active_article_data.unit"
-                                   v-bind:normal_value="active_article_data.normal_value" v-bind:order="index" :lastloop="index===active_article_data.data.length - 1"
+                                       v-bind:key="index" v-bind:activeArticleDataItem="item" v-bind:unit="active_article_data.unit"
+                                       v-bind:normal_value="active_article_data.normal_value" v-bind:order="index" :lastloop="index===active_article_data.data.length - 1"
                                        @save_line="saveLine" @line_up="lineUp" @line_down="lineDown"/>
-                        </tbody>
+                        </draggable>
+
                     </table>
 
                     <AddTableLine @save_line="saveLine" :show_reorder="false" />
@@ -70,6 +73,7 @@
     import TextEditForm from './TextEditForm'
     import TableLine from './TableLine'
     import AddTableLine from './AddTableLine'
+    import draggable from 'vuedraggable'
 
     export default {
         name: 'MainBody',
@@ -112,6 +116,9 @@
             },
             lineDown(order){
                 this.$emit('line_down', order);
+            },
+            saveNewPositions: function(){
+                this.$emit('save_all_data')
             }
         },
         components: {
@@ -119,7 +126,8 @@
             AddPiece,
             TextEditForm,
             TableLine,
-            AddTableLine
+            AddTableLine,
+            draggable
         },
         computed: {
 

@@ -5,7 +5,7 @@
         <MainBody :show_class=show_class :filtered_data=filtered_data
                   :active_tab=active_tab :active_article=active_article :active_article_data=current_opened_article
                   @setTab="changeActiveTab" @setArticle="changeActiveArticle" @save_line="saveLine"
-                  @save_item = "saveItem" @save_element="saveElement" @line_up="lineUp" @line_down="lineDown"/>
+                  @save_item = "saveItem" @save_element="saveElement" @line_up="lineUp" @line_down="lineDown" @save_all_data="saveAllData"/>
     </div>
 </template>
 
@@ -73,7 +73,7 @@
                         this.active_article = userdata.folders[this.active_tab].items.length - 1;
                         break;
                 }
-                console.log('Ajax saving should be here, ',userdata);
+                this.saveAllData();
             },
             saveElement(text,element){
                 let vm = this, userdata = vm.userdata;
@@ -94,7 +94,7 @@
                         );
                         break;
                 }
-                console.log('Ajax saving should be here, ',userdata);
+                this.saveAllData();
             },
             saveLine(date,value,order=null){
                 let vm = this, userdata = vm.userdata;
@@ -109,6 +109,7 @@
                         {"date":date,"value":value}
                     );
                 }
+                this.saveAllData();
             },
             lineUp(order){
                 let vm = this, userdata = vm.userdata;
@@ -119,6 +120,7 @@
                     this.userdata.folders[vm.active_tab].items[vm.active_article].data =
                         Object.assign([], this.userdata.folders[vm.active_tab].items[vm.active_article].data,data_temp);
                 }
+                this.saveAllData();
             },
             lineDown(order){
                 let vm = this, userdata = vm.userdata;
@@ -129,6 +131,11 @@
                     this.userdata.folders[vm.active_tab].items[vm.active_article].data =
                         Object.assign([], this.userdata.folders[vm.active_tab].items[vm.active_article].data,data_temp);
                 }
+                this.saveAllData();
+            },
+            saveAllData(){
+                let vm = this, userdata = vm.userdata;
+                console.log('Ajax saving should be here, ',userdata);
             },
             goBack(){
                 this.show_class = this.show_class - 1;
