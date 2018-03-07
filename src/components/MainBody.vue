@@ -9,7 +9,7 @@
                        v-bind:class="{ active: index===active_tab }"><span v-html="highlightText(item.title)"></span>
                         <font-awesome-icon :icon="[ 'fal', index===active_tab ? 'angle-double-right' : 'angle-right' ]" />
 
-                        <button class="styled_button danger_bg remove_item" v-if="edit_nav === 1">
+                        <button class="styled_button danger_bg remove_item" v-if="edit_nav === 1" v-on:click.stop="removeNavItem(index,1)">
                             <font-awesome-icon :icon="['fal','times']" />
                         </button>
                     </a>
@@ -32,7 +32,7 @@
                        v-bind:class="{ active: index===active_article }"><span v-html="highlightText(item.caption)"></span>
                         <font-awesome-icon :icon="[ 'fal', index===active_article ? 'angle-double-right' : 'angle-right' ]" />
 
-                        <button class="styled_button danger_bg remove_item" v-if="edit_nav === 2">
+                        <button class="styled_button danger_bg remove_item" v-if="edit_nav === 2" v-on:click.stop="removeNavItem(index,2)">
                             <font-awesome-icon :icon="['fal','times']" />
                         </button>
                     </a>
@@ -155,6 +155,9 @@
                     case 2:
                         this.edit_nav = this.edit_nav === 2 ? 0 : order; break;
                 }
+            },
+            removeNavItem: function(ordernumber,nav){
+                this.$emit('remove_folder', ordernumber, nav);
             }
         },
         components: {

@@ -6,7 +6,7 @@
                   :active_tab=active_tab :active_article=active_article :active_article_data=current_opened_article
                   @setTab="changeActiveTab" @setArticle="changeActiveArticle" @save_line="saveLine"
                   @save_item = "saveItem" @save_element="saveElement" @line_up="lineUp" @line_down="lineDown"
-                  @line_remove="lineRemove" @save_all_data="saveAllData"/>
+                  @line_remove="lineRemove" @save_all_data="saveAllData" @remove_folder="removeFolder"/>
     </div>
 </template>
 
@@ -138,6 +138,20 @@
                 let vm = this, userdata = vm.filtered_data;
                 userdata.folders[this.active_tab].items[this.active_article].data.splice(order,1);
                 this.saveAllData();
+            },
+            removeFolder(order,nav){
+                let vm = this, userdata = vm.filtered_data, data_to_delete, data_title;
+                switch(nav){
+                    case 1: data_to_delete = userdata.folders[order]; data_title = data_to_delete.title; break;
+                    case 2: data_to_delete = userdata.folders[vm.active_tab].items[order]; data_title = data_to_delete.caption; break;
+                }
+                if (confirm('Do you really want to delete whole section ' + data_title + '?')) {
+                    switch(nav){
+                        case 1: userdata.folders.splice(order,1); break;
+                        case 2: userdata.folders[vm.active_tab].items.splice(order,1); break;
+                    }
+                    this.saveAllData();
+                }
             },
             saveAllData(){
                 let vm = this, userdata = vm.userdata;
