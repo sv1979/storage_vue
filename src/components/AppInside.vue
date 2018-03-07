@@ -6,7 +6,7 @@
                   :active_tab=active_tab :active_article=active_article :active_article_data=current_opened_article
                   @setTab="changeActiveTab" @setArticle="changeActiveArticle" @save_line="saveLine"
                   @save_item = "saveItem" @save_element="saveElement" @line_up="lineUp" @line_down="lineDown"
-                  @line_remove="lineRemove" @save_all_data="saveAllData" @remove_folder="removeFolder"/>
+                  @line_remove="lineRemove" @save_all_data="saveAllData" @remove_folder="folderRemove"/>
     </div>
 </template>
 
@@ -139,7 +139,7 @@
                 userdata.folders[this.active_tab].items[this.active_article].data.splice(order,1);
                 this.saveAllData();
             },
-            removeFolder(order,nav){
+            folderRemove(order,nav){
                 let vm = this, userdata = vm.filtered_data, data_to_delete, data_title;
                 switch(nav){
                     case 1: data_to_delete = userdata.folders[order]; data_title = data_to_delete.title; break;
@@ -167,8 +167,7 @@
                 }
                 return result
             },
-            jsUcfirst(string)
-            {
+            jsUcfirst(string) {
                 return string.charAt(0).toUpperCase() + string.slice(1);
             },
             swap(obj,order1,order2){

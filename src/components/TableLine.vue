@@ -7,8 +7,8 @@
             <span v-if="activeArticleDataItem.value > normal_value.max">H</span>
         </td>
         <td v-if="normal_value != null">
+            <span>{{ normal_value.min }} <span v-if="normal_value.max && normal_value.min">-</span> {{ normal_value.max }}</span>
             <span v-if="normal_value.text">{{ normal_value.text }}</span>
-            <span v-else>{{ normal_value.min }} - {{ normal_value.max }}</span>
         </td>
         <td>
             <button class="styled_button form_toggler" v-on:click.prevent="show_form = !show_form">

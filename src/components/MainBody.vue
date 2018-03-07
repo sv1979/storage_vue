@@ -49,16 +49,20 @@
         </aside>
 
         <main class="mv_main">
+
             <article class="mv_article" v-if="active_article_data == null">
                 <header>No data</header>
             </article>
             <article class="mv_article" v-else>
                 <header class="with_edit_button">
                     <span v-html="highlightText(active_article_data.caption)"></span>
-                    <TextEditForm v-bind:element="1" v-bind:reference_text=active_article_data.caption @save_element = "saveElement" />
+                    <TextEditForm v-bind:element="1" v-bind:reference_text=active_article_data.caption
+                                  @save_element = "saveElement" />
                 </header>
 
                 <div class="table_data" >
+                    <TableEditForm v-bind:reference_text=active_article_data.unit
+                                   v-bind:reference_norm=active_article_data.normal_value />
                     <table>
                         <thead>
                         <tr>
@@ -73,7 +77,8 @@
                         <draggable v-model="active_article_data.data" :element="'tbody'" @end="saveNewPositions">
                             <TableLine v-for="(item,index) in active_article_data.data"
                                        v-bind:key="index" v-bind:activeArticleDataItem="item" v-bind:unit="active_article_data.unit"
-                                       v-bind:normal_value="active_article_data.normal_value" v-bind:order="index" :lastloop="index===active_article_data.data.length - 1"
+                                       v-bind:normal_value="active_article_data.normal_value"
+                                       v-bind:order="index" :lastloop="index===active_article_data.data.length - 1"
                                        @save_line="saveLine" @line_up="lineUp" @line_down="lineDown" @line_remove="lineRemove"/>
                         </draggable>
 
@@ -95,6 +100,7 @@
     import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
     import AddPiece from './AddPiece'
     import TextEditForm from './TextEditForm'
+    import TableEditForm from './TableEditForm'
     import TableLine from './TableLine'
     import AddTableLine from './AddTableLine'
     import draggable from 'vuedraggable'
@@ -164,6 +170,7 @@
             FontAwesomeIcon,
             AddPiece,
             TextEditForm,
+            TableEditForm,
             TableLine,
             AddTableLine,
             draggable

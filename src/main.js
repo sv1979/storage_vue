@@ -17,9 +17,10 @@ import faAngleDoubleLeft from '@fortawesome/fontawesome-pro-light/faAngleDoubleL
 import faChevronDoubleUp from '@fortawesome/fontawesome-pro-light/faChevronDoubleUp'
 import faChevronDoubleDown from '@fortawesome/fontawesome-pro-light/faChevronDoubleDown'
 import faTrashAlt from '@fortawesome/fontawesome-pro-light/faTrashAlt'
+import faSlidersH from '@fortawesome/fontawesome-pro-light/faSlidersH'
 
 fontawesome.library.add(faSearch, faPlus, faUndo, faSave, faTimes, faCircle, faAngleRight, faAngleDoubleRight, faAngleDoubleLeft, faPencil,
-    faChevronDoubleUp, faChevronDoubleDown, faTrashAlt);
+    faChevronDoubleUp, faChevronDoubleDown, faTrashAlt, faSlidersH);
 Vue.use(FontAwesomeIcon);
 Vue.component('font-awesome-icon', FontAwesomeIcon);
 Vue.component('font-awesome-layers', FontAwesomeLayers);
