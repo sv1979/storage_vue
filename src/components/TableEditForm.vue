@@ -2,11 +2,14 @@
     <div>
         <form action="" v-bind:class="['tef', show_form?'form_shown':'']">
             <label v-if="show_form">Unit: <input type="text" v-model="this_unit" ref="itemunit"></label>
-            <label v-if="show_form">Min Normal: <input type="number" v-model="this_min"></label>
-            <label v-if="show_form">Max Normal: <input type="number" v-model="this_max"></label>
+            <label v-if="show_form">Min: <input type="number" v-model="this_min"></label>
+            <label v-if="show_form">Max: <input type="number" v-model="this_max"></label>
 
-            <button type="submit" v-if="show_form" class="tef__button" v-on:click.prevent="saveText">
-                <font-awesome-icon :icon="['fal','save']" />
+            <button class="tef__button" v-if="show_form" type="reset" title="Reset form">
+                <font-awesome-icon :icon="['fal','times']" />
+            </button>
+            <button type="submit" v-if="show_form" class="tef__button" v-on:click.prevent="saveTableSettings">
+                Save <font-awesome-icon :icon="['fal','save']" />
             </button>
             <button class="tef__button form_toggler" v-on:click.prevent="toggleForm()">
                 <font-awesome-icon :icon="['fal','sliders-h']" v-if="!show_form" />
@@ -25,7 +28,8 @@
                 show_form: false,
                 this_unit: null,
                 this_max: null,
-                this_min: null
+                this_min: null,
+                tab_switched: false
             }
         },
         props: {
@@ -34,8 +38,12 @@
         },
         components: { FontAwesomeIcon },
         methods: {
-            saveText: function(){
-
+            saveTableSettings: function(){
+                let min_val = this.this_min, max_val=this.this_max;
+                if(min_val && max_val && parseFloat(min_val) > parseFloat(max_val)){
+                    min_val = this.this_max; max_val=this.this_min
+                }
+                this.$emit('save_table_settings',{'unit':this.this_unit,'min':min_val,'max':max_val} );
             },
             toggleForm: function(){
                 this.show_form = !this.show_form;
@@ -44,6 +52,9 @@
                     this.this_max = this.ref_norm.max;
                     this.this_min = this.ref_norm.min;
                 }
+            },
+            tabSwitch: function(value){
+                this.tab_switched = value;
             }
         },
         updated: function(){
@@ -60,6 +71,12 @@
             },
             ref_norm: function(){
                 return this.reference_norm ? this.reference_norm : { max:'', min:'' }
+            }
+        },
+        watch: {
+            tab_switched: function(){
+                this.show_form = false;
+                this.tab_switched = false;
             }
         }
     }

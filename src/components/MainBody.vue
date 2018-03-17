@@ -1,18 +1,19 @@
 <template>
-    <div v-bind:class="[ 'mv', 'show_class_'+ show_class ]">
+    <div v-bind:class="[{
+        'mv':true,
+        'edit_mode_activated' :edit_mode,
+        'show_class_1': show_class===1,
+        'show_class_2': show_class===2,
+        'show_class_3': show_class===3
+      }]">
         <aside class="mv_aside">
             <div class="subnav_inner">
                 <draggable v-model="filtered_data.folders" @end="saveNewPositions">
-                    <a href="#"
-                       v-for="(item,index) in filtered_data.folders"
-                       v-on:click="set_active_tab(index)" v-bind:key=index
-                       v-bind:class="{ active: index===active_tab }"><span v-html="highlightText(item.title)"></span>
-                        <font-awesome-icon :icon="[ 'fal', index===active_tab ? 'angle-double-right' : 'angle-right' ]" />
-
-                        <button class="styled_button danger_bg remove_item" v-if="edit_nav === 1" v-on:click.stop="removeNavItem(index,1)">
-                            <font-awesome-icon :icon="['fal','times']" />
-                        </button>
-                    </a>
+                    <NavItem v-for="(item,index) in filtered_data.folders"  v-bind:key=index v-bind:navItem="item"
+                             v-bind:order="index" :nav_index="1" v-bind:edit_nav="edit_nav" :active_tab="active_tab"
+                             v-bind:all_data="filtered_data" @removeNavItem="removeNavItem" :initial_show="true"
+                             @set_active_tab="set_active_tab" @set_active_article="set_active_article"
+                             @saveNavItem="saveNavItem" />
                 </draggable>
                 <AddPiece button_text="Add item" v-bind:level="1" @save_piece = "saveItem" />
             </div>
@@ -26,16 +27,12 @@
         <aside class="mv_subnav">
             <div class="subnav_inner">
                 <draggable v-model="filtered_data.folders[active_tab].items" @end="saveNewPositions">
-                    <a href="#"
-                       v-for="(item,index) in filtered_data.folders[active_tab].items"
-                       v-on:click="set_active_article(index)" v-bind:key=index
-                       v-bind:class="{ active: index===active_article }"><span v-html="highlightText(item.caption)"></span>
-                        <font-awesome-icon :icon="[ 'fal', index===active_article ? 'angle-double-right' : 'angle-right' ]" />
-
-                        <button class="styled_button danger_bg remove_item" v-if="edit_nav === 2" v-on:click.stop="removeNavItem(index,2)">
-                            <font-awesome-icon :icon="['fal','times']" />
-                        </button>
-                    </a>
+                    <NavItem v-for="(item,index) in filtered_data.folders[active_tab].items"  v-bind:key=index
+                             v-bind:navItem="item"
+                             v-bind:order="index" :nav_index="2" v-bind:edit_nav="edit_nav" :active_tab="active_tab"
+                             v-bind:all_data="filtered_data" @removeNavItem="removeNavItem" :initial_show="true"
+                             @set_active_tab="set_active_tab" @set_active_article="set_active_article"
+                             @saveNavItem="saveNavItem" />
                 </draggable>
                 <AddPiece button_text="Add item" v-bind:level="2" @save_piece = "saveItem" />
             </div>
@@ -57,12 +54,14 @@
                 <header class="with_edit_button">
                     <span v-html="highlightText(active_article_data.caption)"></span>
                     <TextEditForm v-bind:element="1" v-bind:reference_text=active_article_data.caption
-                                  @save_element = "saveElement" />
+                                  @save_element = "saveElement" ref="headerEditForm" />
                 </header>
 
                 <div class="table_data" >
-                    <TableEditForm v-bind:reference_text=active_article_data.unit
-                                   v-bind:reference_norm=active_article_data.normal_value />
+                    <TableEditForm ref="tableEditForm"
+                                   v-bind:reference_text=active_article_data.unit
+                                   v-bind:reference_norm=active_article_data.normal_value
+                                    @save_table_settings="saveTableSettings"/>
                     <table>
                         <thead>
                         <tr>
@@ -79,17 +78,19 @@
                                        v-bind:key="index" v-bind:activeArticleDataItem="item" v-bind:unit="active_article_data.unit"
                                        v-bind:normal_value="active_article_data.normal_value"
                                        v-bind:order="index" :lastloop="index===active_article_data.data.length - 1"
-                                       @save_line="saveLine" @line_up="lineUp" @line_down="lineDown" @line_remove="lineRemove"/>
+                                       @save_line="saveLine" @line_up="lineUp" @line_down="lineDown" @line_remove="lineRemove"
+                                       />
                         </draggable>
 
                     </table>
 
-                    <AddTableLine @save_line="saveLine" :show_reorder="false" />
+                    <AddTableLine @save_line="saveLine" :show_reorder="false" ref="tableLineForm"/>
                 </div>
 
                 <footer class="with_edit_button">
                     <span v-html="highlightText(active_article_data.description)"></span>
-                    <TextEditForm v-bind:element="2" v-bind:reference_text=active_article_data.description @save_element = "saveElement" />
+                    <TextEditForm v-bind:element="2" v-bind:reference_text=active_article_data.description
+                                  @save_element = "saveElement" ref="footerEditForm"  />
                 </footer>
             </article>
         </main>
@@ -103,6 +104,7 @@
     import TableEditForm from './TableEditForm'
     import TableLine from './TableLine'
     import AddTableLine from './AddTableLine'
+    import NavItem from './NavItem'
     import draggable from 'vuedraggable'
 
     export default {
@@ -110,25 +112,28 @@
         beforeCreate () {
 
         },
-        data: () => {
-            return {
-                this_search: null,
-                edit_nav: 0
-            }
-        },
         props: {
+            edit_mode: Boolean,
             show_class:Number,
             active_tab:Number,
             active_article:Number,
             filtered_data: Object,
             active_article_data: Object
         },
+        data: () => {
+            return {
+                this_search: null,
+                edit_nav: 0,
+                tab_switched: false
+            }
+        },
+
         methods: {
             set_active_tab(index){
-                this.$emit('setTab',index)
+                this.$emit('setTab',index);
             },
             set_active_article(index){
-                this.$emit('setArticle',index)
+                this.$emit('setArticle',index);
             },
             highlightText(text){
                 return this.$parent.highlight(text)
@@ -150,9 +155,14 @@
             },
             lineRemove(order){
                 this.$emit('line_remove', order);
+                this.$forceUpdate();
+            },
+            saveTableSettings(settings){
+                this.$emit('save_table_settings', settings);
             },
             saveNewPositions: function(){
-                this.$emit('save_all_data')
+                this.$emit('save_all_data');
+                this.$forceUpdate();
             },
             editNav: function(order){
                 switch(order){
@@ -164,6 +174,17 @@
             },
             removeNavItem: function(ordernumber,nav){
                 this.$emit('remove_folder', ordernumber, nav);
+                this.$forceUpdate();
+            },
+            saveNavItem: function(text,nav,order){
+                this.$emit('save_nav_item',text,nav,order);
+                this.$forceUpdate();
+            },
+            editNavItem: function(){
+
+            },
+            tabSwitch: function(value){
+                this.tab_switched = value;
             }
         },
         components: {
@@ -173,6 +194,7 @@
             TableEditForm,
             TableLine,
             AddTableLine,
+            NavItem,
             draggable
         },
         computed: {
@@ -180,6 +202,24 @@
         },
         mounted: function(){
 
+        },
+        watch: {
+            tab_switched: function(){
+                if(this.$refs.headerEditForm){
+                    this.$refs.headerEditForm.tabSwitch(true);
+                }
+                if(this.$refs.footerEditForm){
+                    this.$refs.footerEditForm.tabSwitch(true);
+                }
+                if(this.$refs.tableEditForm){
+                    this.$refs.tableEditForm.tabSwitch(true);
+                }
+                if(this.$refs.tableLineForm){
+                    this.$refs.tableLineForm.hideForm();
+                    this.$refs.tableLineForm.tabSwitch(true);
+                }
+                this.tab_switched = false;
+            }
         },
     }
 </script>

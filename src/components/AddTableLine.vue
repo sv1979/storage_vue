@@ -55,7 +55,8 @@
                 this_val:  null,
                 date_invalid: false,
                 val_invalid: false,
-                cellorder: null
+                cellorder: null,
+                tab_switched: false
             }
         },
         components: { FontAwesomeIcon, Datepicker },
@@ -105,11 +106,15 @@
             lineRemove: function(){
                 this.$emit('line_remove', this.cellorder);
                 this.$emit('hide_form');
+            },
+            tabSwitch: function(value){
+                this.tab_switched = value;
             }
         },
         watch: {
-            this_val: function(){
-                //fires every time when this_val updated
+            tab_switched: function(){
+                this.show_form = false;
+                this.tab_switched = false;
             }
         },
         computed: {

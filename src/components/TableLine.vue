@@ -3,8 +3,8 @@
         <td>{{ activeArticleDataItem.date | moment("DD MMM YYYY") }}</td>
         <td>{{ activeArticleDataItem.value }} {{ unit }}</td>
         <td v-if="normal_value != null">
-            <span v-if="activeArticleDataItem.value < normal_value.min">L</span>
-            <span v-if="activeArticleDataItem.value > normal_value.max">H</span>
+            <span v-if="parseFloat(activeArticleDataItem.value) < parseFloat(normal_value.min)">L</span>
+            <span v-if="parseFloat(activeArticleDataItem.value) > parseFloat(normal_value.max)">H</span>
         </td>
         <td v-if="normal_value != null">
             <span>{{ normal_value.min }} <span v-if="normal_value.max && normal_value.min">-</span> {{ normal_value.max }}</span>
@@ -20,7 +20,8 @@
         <td :colspan="normal_value != null ? 5 : 3">
             <AddTableLine :initial_date='activeArticleDataItem.date.toString()' :initial_val='activeArticleDataItem.value' :cell_order='order'
                           :initial_show="true" :show_reorder="true" :lastloop="lastloop"
-                          @hide_form="hideForm" @save_line="save_cell" @line_up="lineUp" @line_down="lineDown" @line_remove="lineRemove" />
+                          @hide_form="hideForm" @save_line="save_cell" @line_up="lineUp" @line_down="lineDown" @line_remove="lineRemove"
+                          ref="tableLineForm"/>
         </td>
     </tr>
 </template>
@@ -40,11 +41,12 @@
         },
         data: () => {
             return {
-                show_form: !!this.openline,
+                show_form: false,
                 this_date: null,
                 this_val:  null,
                 date_invalid: false,
-                val_invalid: false
+                val_invalid: false,
+                tab_switched: false
             }
         },
         components: { FontAwesomeIcon, Datepicker, AddTableLine },
@@ -63,6 +65,16 @@
             },
             lineRemove: function(order){
                 this.$emit('line_remove',order);
+            },
+        },
+        watch: {
+            tab_switched: function(){
+                this.show_form = false;
+                if(this.$refs.tableLineForm){
+                    // this.$refs.tableLineForm.hideForm();
+                    this.$refs.tableLineForm.tabSwitch(true);
+                }
+                this.tab_switched = false;
             }
         }
     }

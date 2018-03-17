@@ -1,12 +1,14 @@
 <template>
-    <div id="main_view" v-if="this.$store.getters.get_interface === 'main_view'" v-cloak v-bind:class="{ with_form : show_form }">
+    <div id="main_view" v-if="this.$store.getters.get_interface === 'main_view'" v-cloak
+         v-bind:class="{ with_form : show_form }">
         <MainHeader :show_class=show_class :show_form=show_form :userpic=userpic :search_t=search_term :no_results=no_results
-                    @searchData="lookForData" @navBack="goBack"/>
-        <MainBody :show_class=show_class :filtered_data=filtered_data
+                    @searchData="lookForData" @navBack="goBack" ref="mainHeaderComponent"/>
+        <MainBody :show_class=show_class :filtered_data=filtered_data :edit_mode=edit_mode
                   :active_tab=active_tab :active_article=active_article :active_article_data=current_opened_article
                   @setTab="changeActiveTab" @setArticle="changeActiveArticle" @save_line="saveLine"
                   @save_item = "saveItem" @save_element="saveElement" @line_up="lineUp" @line_down="lineDown"
-                  @line_remove="lineRemove" @save_all_data="saveAllData" @remove_folder="folderRemove"/>
+                  @line_remove="lineRemove" @save_all_data="saveAllData" @remove_folder="folderRemove"
+                  @save_table_settings="saveTableSettings" @save_nav_item="save_nav_item" ref="mainBodyComponent" />
     </div>
 </template>
 
@@ -29,7 +31,8 @@
                 show_class: 1,
                 active_tab: 0,
                 active_article: 0,
-                active_article_data: null
+                active_article_data: null,
+                edit_mode: true
             }
         },
         components: { MainHeader, MainBody },
@@ -42,21 +45,24 @@
                 this.active_tab = 0;
                 this.active_article = 0;
                 this.show_class = 1;
+                this.$refs.mainBodyComponent.tabSwitch(true);
             },
             changeActiveTab(index){
                 this.active_tab = index;
                 this.active_article = 0;
                 this.show_class = 2;
+                this.$refs.mainBodyComponent.tabSwitch(true);
             },
             changeActiveArticle(index){
                 this.active_article = index;
                 this.show_class = 3;
+                this.$refs.mainBodyComponent.tabSwitch(true);
             },
             saveItem(text,level){
                 let vm = this, userdata = vm.filtered_data;
 
                 switch(level){
-                    case 1 :
+                    case 1 :console.log('ssset');
                         this.$set(
                             userdata.folders,
                             userdata.folders.length,
@@ -139,7 +145,7 @@
                 userdata.folders[this.active_tab].items[this.active_article].data.splice(order,1);
                 this.saveAllData();
             },
-            folderRemove(order,nav){
+            folderRemove(order,nav){console.log(order,nav);
                 let vm = this, userdata = vm.filtered_data, data_to_delete, data_title;
                 switch(nav){
                     case 1: data_to_delete = userdata.folders[order]; data_title = data_to_delete.title; break;
@@ -147,15 +153,68 @@
                 }
                 if (confirm('Do you really want to delete whole section ' + data_title + '?')) {
                     switch(nav){
-                        case 1: userdata.folders.splice(order,1); break;
+                        case 1:
+                            if(this.active_tab === userdata.folders.length - 1){
+                                this.active_tab = this.active_tab - 1 ? this.active_tab - 1 : 0;
+                                this.active_article = 0;
+                            }
+                            userdata.folders.splice(order,1); break;
                         case 2: userdata.folders[vm.active_tab].items.splice(order,1); break;
                     }
+
                     this.saveAllData();
+                    this.$forceUpdate();
                 }
             },
-            saveAllData(){
+            save_nav_item(text,nav,order){
+                let vm = this, data_to_edit;
+                switch(nav){
+                    case 1: data_to_edit = vm.userdata.folders[order]; data_to_edit.title = text; break;
+                    case 2: data_to_edit = vm.userdata.folders[vm.active_tab].items[order];
+                            data_to_edit.caption = text; break;
+                }
+                this.saveAllData();
+                this.$forceUpdate();
+            },
+            saveTableSettings(settings){
                 let vm = this, userdata = vm.userdata;
-                console.log('Ajax saving should be here, ',userdata);
+
+                this.$set(
+                    userdata.folders[this.active_tab].items[this.active_article],
+                    'unit',
+                    settings.unit
+                );
+
+                if (settings.min || settings.max){
+                    this.$set(
+                        userdata.folders[this.active_tab].items[this.active_article],
+                        'normal_value',
+                        {}
+                    );
+                    this.$set(
+                        userdata.folders[this.active_tab].items[this.active_article].normal_value,
+                        'min',
+                        settings.min
+                    );
+                    this.$set(
+                        userdata.folders[this.active_tab].items[this.active_article].normal_value,
+                        'max',
+                        settings.max
+                    );
+                } else {
+                    this.$set(
+                        userdata.folders[this.active_tab].items[this.active_article],
+                        'normal_value',
+                        null
+                    );
+                }
+                this.saveAllData();
+            },
+            saveAllData(){
+                let vm = this, new_data = {};
+                new_data = vm.filtered_data;
+                this.userdata = new_data;
+                console.log('Ajax saving should be here, ',this.userdata);
             },
             goBack(){
                 this.show_class = this.show_class - 1;

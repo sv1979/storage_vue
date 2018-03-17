@@ -191,13 +191,31 @@ b, strong {
   .fal, svg {
     font-size: 2rem;
   }
-  .remove_item {
+  .remove_item, .edit_item {
     position: absolute;
-    top: 5px;
     left: 0;
-    padding: 2px 5px;
+    padding: 2px 1px;
     .fal, svg {
       font-size: 1rem;
+    }
+  }
+  .remove_item {
+    top: 5px;
+  }
+  .edit_item {
+    bottom: 5px;
+  }
+  &.editmode {
+    padding-right: 0;
+    .ap_cell {
+      align-items: stretch;
+      [type=text] {
+        padding: 0 10px;
+      }
+      button {
+        font-size: .8em;
+        padding: 0 3px;
+      }
     }
   }
   &.active {

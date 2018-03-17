@@ -406,6 +406,17 @@ body {
       opacity: 1;
     }
   }
+  label {
+    .flex-display(row,nowrap,center,center,center);
+    flex: 1;
+    padding: 0 1rem 0 0;
+    [type=text],[type=number]{
+      .styled_input;
+      flex: 1 0 100px;
+      width: 100px;
+      margin-left: .5rem;
+    }
+  }
 }
 .atl {
   .flex-display(row-reverse,nowrap,center,stretch,center);

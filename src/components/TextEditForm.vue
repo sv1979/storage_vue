@@ -21,7 +21,8 @@
         data: () => {
             return {
                 show_form: false,
-                this_piece: null
+                this_piece: null,
+                tab_switched: false
             }
         },
         props: {
@@ -39,6 +40,9 @@
                 if(this.show_form){
                     this.this_piece = this.ref_text;
                 }
+            },
+            tabSwitch: function(value){
+                this.tab_switched = value;
             }
         },
         updated: function(){
@@ -53,7 +57,13 @@
             ref_text: function(){
                 return this.reference_text
             }
-        }
+        },
+        watch: {
+            tab_switched: function(){
+                this.show_form = false;
+                this.tab_switched = false;
+            }
+        },
     }
 </script>
 <style scoped>
