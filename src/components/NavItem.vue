@@ -1,9 +1,9 @@
 <template>
     <a href="#"
        v-on:click="set_active_tab"
-       v-bind:class="{ active: order===active_tab, editmode: show_form===true }">
+       v-bind:class="{ active: is_active, editmode: show_form===true }">
         <span v-html="navItem.title || navItem.caption" v-if="!show_form"></span>
-        <font-awesome-icon :icon="[ 'fal', order===active_tab ? 'angle-double-right' : 'angle-right' ]" v-if="!show_form" />
+        <font-awesome-icon :icon="[ 'fal', is_active ? 'angle-double-right' : 'angle-right' ]" v-if="!show_form" />
 
         <AddPiece button_text="A" v-bind:level="3" @edit_nav_piece = "editNavPiece" @hide_form="hideForm"
                   v-if="show_form" :initial_show="initial_show" v-bind:order="order"
@@ -40,10 +40,12 @@
             navItem:Object,
             all_data:Object,
             active_tab:Number,
+            active_article:Number,
             order:Number,
             nav_index:Number,
             edit_nav:Number,
             initial_show: Boolean,
+            is_active: Boolean,
         },
         components: { FontAwesomeIcon, AddPiece },
         methods: {

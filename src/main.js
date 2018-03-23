@@ -2,6 +2,7 @@ import Vue from 'vue/dist/vue'
 import Vuex from 'vuex/dist/vuex.common'
 import vMediaQuery from 'v-media-query'
 import moment from 'vue-moment'
+
 import fontawesome from '@fortawesome/fontawesome'
 import {FontAwesomeIcon, FontAwesomeLayers} from '@fortawesome/vue-fontawesome'
 import faSearch from '@fortawesome/fontawesome-pro-light/faSearch'
@@ -18,9 +19,10 @@ import faChevronDoubleUp from '@fortawesome/fontawesome-pro-light/faChevronDoubl
 import faChevronDoubleDown from '@fortawesome/fontawesome-pro-light/faChevronDoubleDown'
 import faTrashAlt from '@fortawesome/fontawesome-pro-light/faTrashAlt'
 import faSlidersH from '@fortawesome/fontawesome-pro-light/faSlidersH'
+import faSignOut from '@fortawesome/fontawesome-pro-light/faSignOut'
 
 fontawesome.library.add(faSearch, faPlus, faUndo, faSave, faTimes, faCircle, faAngleRight, faAngleDoubleRight, faAngleDoubleLeft, faPencil,
-    faChevronDoubleUp, faChevronDoubleDown, faTrashAlt, faSlidersH);
+    faChevronDoubleUp, faChevronDoubleDown, faTrashAlt, faSlidersH, faSignOut);
 Vue.use(FontAwesomeIcon);
 Vue.component('font-awesome-icon', FontAwesomeIcon);
 Vue.component('font-awesome-layers', FontAwesomeLayers);
@@ -32,39 +34,73 @@ import rainfield from './assets/rainfield.js';
 import 'normalize.css';
 import './assets/styles.less';
 
+import './db.js'
 import App from './App.vue';
 
-Vue.config.productionTip = false;
 
+Vue.config.productionTip = false;
 
 const store = new Vuex.Store({
     state: {
         current_interface: 'intro_form',
-        // current_interface: 'main_view',
-        username: 'Guest'
+        current_user: {
+            name: '',
+            pic: '',
+            uid: null,
+            dataset: null
+        }
     },
     actions: {
         change_interface_action: ({commit}, new_id) => {
             commit("change_interface", new_id);
         },
-        set_username_action: ({commit}, username) => {
-            commit("set_username", username);
+        set_current_user_action: ({commit}, current_user) =>{
+            if(current_user.name !== null) {
+                commit("set_current_user_name",current_user.name )
+            }
+            if(current_user.pic !== null) {
+                commit("set_current_user_pic",current_user.pic )
+            }
+            if(current_user.uid !== null) {
+                commit("set_current_user_uid",current_user.uid )
+            }
+            if(current_user.dataset !== null) {
+                commit("set_current_user_dataset",current_user.dataset )
+            }
         }
     },
     mutations: {
         change_interface(state, i_id) {
             state.current_interface = i_id;
         },
-        set_username(state, username) {
-            state.username = username;
+        set_current_user_name(state, username) {
+            state.current_user.name = username;
+        },
+        set_current_user_pic(state, pic) {
+            state.current_user.pic = pic;
+        },
+        set_current_user_uid(state, uid) {
+            state.current_user.uid = uid;
+        },
+        set_current_user_dataset(state, dataset) {
+            state.current_user.dataset = dataset;
         }
     },
     getters: {
         get_interface: state => {
             return state.current_interface;
         },
-        get_username: state => {
-            return state.username;
+        get_current_user_name: state => {
+            return state.current_user.name;
+        },
+        get_current_user_pic: state => {
+            return 'url(' + state.current_user.pic + ')';
+        },
+        get_current_user_uid: state => {
+            return state.current_user.uid;
+        },
+        get_current_user_dataset: state => {
+            return state.current_user.dataset;
         }
     }
 });

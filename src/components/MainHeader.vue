@@ -19,16 +19,20 @@
         </form>
 
         <div class="usercorner">
-            <div class="username">{{ this.$store.getters.get_username | truncate(($mq.resize && $mq.above('768px')) ? 20 : 8) }}</div>
+            <div class="username">
+                {{ this.$store.getters.get_current_user_name | truncate(($mq.resize && $mq.above('768px')) ? 20 : 8) }}
+            </div>
             <div class="userpic" v-bind:style="{ backgroundImage: userpic }">
                 <i class="fal fa-user" aria-hidden="true" v-if="userpic == null"></i>
             </div>
+            <a href="#" v-on:click="logout()" ><font-awesome-icon :icon="['fal','sign-out']" /></a>
         </div>
     </header>
 </template>
 
 <script>
     import { FontAwesomeIcon, FontAwesomeLayers } from '@fortawesome/vue-fontawesome'
+    import firebase from 'firebase'
 
     export default {
         name: 'MainHeader',
@@ -65,6 +69,15 @@
             },
             change_form_show_status(){
                 this.form_shown = !this.form_shown
+            },
+            logout: function(){
+                let vm = this;
+                firebase.auth().signOut().then(function() {
+                    vm.$store.dispatch('change_interface_action', 'intro_form');
+                    vm.$emit('clean_user_data');
+                }).catch(function(error) {
+                    console.log(error);
+                });
             }
         },
         components: {
@@ -77,11 +90,15 @@
             this.this_search = this.search_t
         },
         filters: {
-            truncate: function(text, stop, clamp){ return text.slice(0, stop) + (stop < text.length ? clamp || '...' : '') }
+            truncate: function(text, stop, clamp){
+                return text ? text.slice(0, stop) + (stop < text.length ? clamp || '...' : '') : ''
+            }
         }
     }
 </script>
 
 <style scoped>
-
+    .usercorner a {
+        padding-left: 1rem;
+    }
 </style>

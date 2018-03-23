@@ -1,8 +1,10 @@
 <template>
     <div id="main_view" v-if="this.$store.getters.get_interface === 'main_view'" v-cloak
          v-bind:class="{ with_form : show_form }">
-        <MainHeader :show_class=show_class :show_form=show_form :userpic=userpic :search_t=search_term :no_results=no_results
-                    @searchData="lookForData" @navBack="goBack" ref="mainHeaderComponent"/>
+        <MainHeader :show_class=show_class :show_form=show_form
+                    :userpic=$store.getters.get_current_user_pic
+                    :search_t=search_term :no_results=no_results
+                    @searchData="lookForData" @navBack="goBack" @clean_user_data="cleanUserData" ref="mainHeaderComponent"/>
         <MainBody :show_class=show_class :filtered_data=filtered_data :edit_mode=edit_mode
                   :active_tab=active_tab :active_article=active_article :active_article_data=current_opened_article
                   @setTab="changeActiveTab" @setArticle="changeActiveArticle" @save_line="saveLine"
@@ -17,14 +19,11 @@
     import MainHeader from './MainHeader'
     import MainBody from './MainBody'
 
-    const axios = require('axios');
-
     export default {
         name: 'AppInside',
         data: () => {
             return {
                 show_form: false,
-                userpic: null,
                 userdata: null,
                 search_term: '',
                 no_results: false,
@@ -53,7 +52,7 @@
                 this.show_class = 2;
                 this.$refs.mainBodyComponent.tabSwitch(true);
             },
-            changeActiveArticle(index){
+            changeActiveArticle(index){console.log('ind ',index);
                 this.active_article = index;
                 this.show_class = 3;
                 this.$refs.mainBodyComponent.tabSwitch(true);
@@ -62,10 +61,10 @@
                 let vm = this, userdata = vm.filtered_data;
 
                 switch(level){
-                    case 1 :console.log('ssset');
+                    case 1 :
                         this.$set(
                             userdata.folders,
-                            userdata.folders.length,
+                            userdata.folders ? userdata.folders.length : 0,
                             { title: text, items: [] }
                             );
                         this.active_tab = userdata.folders.length - 1;
@@ -107,6 +106,9 @@
                 let vm = this, userdata = vm.filtered_data;
 
                 if(order===null){
+                    if (!userdata.folders[this.active_tab].items[this.active_article].data) {
+                        userdata.folders[this.active_tab].items[this.active_article].data = [];
+                    }
                     userdata.folders[this.active_tab].items[this.active_article].data.push({"date":date,"value":value});
                 }
                 else {
@@ -214,7 +216,13 @@
                 let vm = this, new_data = {};
                 new_data = vm.filtered_data;
                 this.userdata = new_data;
-                console.log('Ajax saving should be here, ',this.userdata);
+
+                this.$FireBaseDb.ref('userdata/' + this.$store.getters.get_current_user_uid).set({
+                    folders: this.userdata.folders
+                });
+            },
+            cleanUserData(){
+                this.$store.dispatch('set_current_user_action', {});
             },
             goBack(){
                 this.show_class = this.show_class - 1;
@@ -243,6 +251,13 @@
             filtered_data: function(){
                 let vm = this, result = {}, heap = [];
 
+                if(vm.userdata === null) {
+                    vm.userdata = this.$store.getters.get_current_user_dataset;
+                }
+                if(vm.userdata.folders === null) {
+                    vm.userdata.folders = [];
+                }
+
                 for ( let val of this.userdata.folders ) {
                     if (val.title.toLowerCase().indexOf(vm.search_term) > -1) {
                         heap = [...heap, val]
@@ -270,89 +285,86 @@
             },
             current_opened_article: function(){
                 let vm = this;
-                return vm.filtered_data.folders[vm.active_tab].items[vm.active_article]
+                return (
+                    vm.filtered_data.folders.length ?
+                    vm.filtered_data.folders[vm.active_tab].items[vm.active_article] :
+                        null
+                )
             }
         },
 
         mounted: function(){
-            let vm = this;
-            // Should get data from backend
-            axios.get('https://randomuser.me/api/', {
-                params: { dataType: 'json' }
-            })
-                .then((response) => {
-                    this.$set(vm, 'userpic', 'url('+ response.data.results[0].picture['medium'] +')');
-                })
-                .catch((error) => {
-                    console.log(error);
-                });
+            // let vm = this;
 
-            let fakejson = {
-                "folders" : [
-                    {
-                        "title" : "Health Info",
-                        "items" : [
-                            {
-                                "caption" : "Weight",
-                                "description" : "W123 Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit",
-                                "data" : [
-                                    { "date" : "2016-02-08", "value": "86.4" },
-                                    { "date" : "2016-09-09", "value": "84" },
-                                    { "date" : "2016-07-10", "value": "83.9" },
-                                    { "date" : "2016-08-01", "value": "84.2" }
-                                ],
-                                "unit" : "kg",
-                                "normal_value" : null
-                            },
-                            {
-                                "caption" : "Haemoglobin",
-                                "description" : "H123 Hhhh Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit",
-                                "data" : [
-                                    { "date" : "2016-11-08", "value": "114" },
-                                    { "date" : "2016-11-14", "value": "112" },
-                                    { "date" : "2016-12-01", "value": "100" },
-                                    { "date" : "2016-12-18", "value": "101" }
-                                ],
-                                "unit" : "M",
-                                "normal_value" : {
-                                    "min": "110",
-                                    "max": "113"
-                                }
-                            }
-                        ]
-                    },
-                    {
-                        "title" : "Other Info",
-                        "items" : []
-                    },
-                    {
-                        "title" : "Other Info 2",
-                        "items" : [
-                            {
-                                "caption" : "Blood pressure",
-                                "description" : "Bp 123 Bbb Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit",
-                                "data" : [
-                                    { "date" : "2016-06-08", "value": "100/90" },
-                                    { "date" : "2016-07-08", "value": "110/95" },
-                                    { "date" : "2016-10-10", "value": "140/120" },
-                                    { "date" : "2016-11-01", "value": "105/75" }
-                                ],
-                                "unit" : "xxx",
-                                "normal_value" : {
-                                    "text" : "120/80"
-                                }
-                            }
-                        ]
-                    }
-                ]
-            };
+            // let fakejson = {
+            //     "folders" : [
+            //         {
+            //             "title" : "Health Info",
+            //             "items" : [
+            //                 {
+            //                     "caption" : "Weight",
+            //                     "description" : "W123 Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit",
+            //                     "data" : [
+            //                         { "date" : "2016-02-08", "value": "86.4" },
+            //                         { "date" : "2016-09-09", "value": "84" },
+            //                         { "date" : "2016-07-10", "value": "83.9" },
+            //                         { "date" : "2016-08-01", "value": "84.2" }
+            //                     ],
+            //                     "unit" : "kg",
+            //                     "normal_value" : null
+            //                 },
+            //                 {
+            //                     "caption" : "Haemoglobin",
+            //                     "description" : "H123 Hhhh Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit",
+            //                     "data" : [
+            //                         { "date" : "2016-11-08", "value": "114" },
+            //                         { "date" : "2016-11-14", "value": "112" },
+            //                         { "date" : "2016-12-01", "value": "100" },
+            //                         { "date" : "2016-12-18", "value": "101" }
+            //                     ],
+            //                     "unit" : "M",
+            //                     "normal_value" : {
+            //                         "min": "110",
+            //                         "max": "113"
+            //                     }
+            //                 }
+            //             ]
+            //         },
+            //         {
+            //             "title" : "Other Info",
+            //             "items" : []
+            //         },
+            //         {
+            //             "title" : "Other Info 2",
+            //             "items" : [
+            //                 {
+            //                     "caption" : "Blood pressure",
+            //                     "description" : "Bp 123 Bbb Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit",
+            //                     "data" : [
+            //                         { "date" : "2016-06-08", "value": "100/90" },
+            //                         { "date" : "2016-07-08", "value": "110/95" },
+            //                         { "date" : "2016-10-10", "value": "140/120" },
+            //                         { "date" : "2016-11-01", "value": "105/75" }
+            //                     ],
+            //                     "unit" : "xxx",
+            //                     "normal_value" : {
+            //                         "text" : "120/80"
+            //                     }
+            //                 }
+            //             ]
+            //         }
+            //     ]
+            // };
 
-            this.$set(vm, 'userdata', fakejson); // Should get data from backend
+            // while (!this.$store.getters.get_current_user_dataset) {
+            //     this.$set(vm, 'userdata', this.$store.getters.get_current_user_dataset); // Should get data from backend
+            // }
 
         },
         beforeMount: function(){
             let vm = this;
             vm.show_class = 1;
+
         },
     }
 

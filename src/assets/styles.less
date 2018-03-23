@@ -122,6 +122,9 @@ body {
     grid-area: usercorner;
     justify-self: end;
     .flex-display(row,nowrap,center,center,center);
+    a {
+      color: @color4;
+    }
   }
   [type=search] {
     background-color: transparent;
@@ -289,7 +292,7 @@ body {
   padding: 0 2vw;
   .flex-display(column,nowrap,space-between,stretch,center);
   header {
-    .font(1.8vw, 2.1vw);
+    .font(24px,1.4);
     padding: 1.5vw 0;
     border-bottom: 2px solid @color2;
     flex: 0 1 auto;

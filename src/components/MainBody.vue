@@ -8,9 +8,11 @@
       }]">
         <aside class="mv_aside">
             <div class="subnav_inner">
-                <draggable v-model="filtered_data.folders" @end="saveNewPositions">
+                <draggable v-if="filtered_data.folders.length" v-model="filtered_data.folders" @end="saveNewPositions">
                     <NavItem v-for="(item,index) in filtered_data.folders"  v-bind:key=index v-bind:navItem="item"
-                             v-bind:order="index" :nav_index="1" v-bind:edit_nav="edit_nav" :active_tab="active_tab"
+                             v-bind:order="index" :nav_index="1" v-bind:edit_nav="edit_nav"
+                             :active_tab="active_tab" :active_article="active_article"
+                             :is_active="active_tab===index"
                              v-bind:all_data="filtered_data" @removeNavItem="removeNavItem" :initial_show="true"
                              @set_active_tab="set_active_tab" @set_active_article="set_active_article"
                              @saveNavItem="saveNavItem" />
@@ -26,15 +28,17 @@
 
         <aside class="mv_subnav">
             <div class="subnav_inner">
-                <draggable v-model="filtered_data.folders[active_tab].items" @end="saveNewPositions">
+                <draggable v-if="filtered_data.folders && filtered_data.folders[active_tab]" v-model="filtered_data.folders[active_tab].items" @end="saveNewPositions">
                     <NavItem v-for="(item,index) in filtered_data.folders[active_tab].items"  v-bind:key=index
                              v-bind:navItem="item"
-                             v-bind:order="index" :nav_index="2" v-bind:edit_nav="edit_nav" :active_tab="active_tab"
+                             v-bind:order="index" :nav_index="2" v-bind:edit_nav="edit_nav"
+                             :active_tab="active_tab" :active_article="active_article"
+                             :is_active="active_article===index"
                              v-bind:all_data="filtered_data" @removeNavItem="removeNavItem" :initial_show="true"
                              @set_active_tab="set_active_tab" @set_active_article="set_active_article"
                              @saveNavItem="saveNavItem" />
                 </draggable>
-                <AddPiece button_text="Add item" v-bind:level="2" @save_piece = "saveItem" />
+                <AddPiece v-if="filtered_data.folders.length" button_text="Add item" v-bind:level="2" @save_piece = "saveItem" />
             </div>
 
             <div class="list_controls">
