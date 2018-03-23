@@ -125,13 +125,11 @@
                                         this.$store.dispatch('change_interface_action', 'main_view');
                                         this.$store.dispatch('set_current_user_action', $user);
 
-                                        this.$emit('save_user_to_db',
-                                            {
-                                                'uid':user.uid,
-                                                'name':this.username.slice(0,this.username.indexOf("@")),
-                                                'email':this.username,
-                                                'pic': $user.pic
-                                            });
+                                        this.$FireBaseDb.ref('users/' + user.uid).set({
+                                            username: this.username.slice(0,this.username.indexOf("@")),
+                                            email: this.username,
+                                            pic: $user.pic
+                                        });
 
                                         this.username = '';
                                         this.password = '';

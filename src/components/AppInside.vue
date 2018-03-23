@@ -52,7 +52,7 @@
                 this.show_class = 2;
                 this.$refs.mainBodyComponent.tabSwitch(true);
             },
-            changeActiveArticle(index){console.log('ind ',index);
+            changeActiveArticle(index){
                 this.active_article = index;
                 this.show_class = 3;
                 this.$refs.mainBodyComponent.tabSwitch(true);
@@ -71,12 +71,17 @@
                         this.active_article = 0;
                         break;
                     case 2:
+                        if (!userdata.folders[this.active_tab].items){
+                            userdata.folders[this.active_tab].items = []
+                        }
                         this.$set(
                             userdata.folders[this.active_tab].items,
                             userdata.folders[this.active_tab].items.length,
                             { caption: text, data: [], description: '', normal_value:null, unit: '' }
                             );
-                        this.active_article = userdata.folders[this.active_tab].items.length - 1;
+                        this.active_article =
+                            userdata.folders[this.active_tab].items.length - 1 ?
+                                userdata.folders[this.active_tab].items.length - 1 : 0;
                         break;
                 }
                 this.saveAllData();
@@ -147,7 +152,7 @@
                 userdata.folders[this.active_tab].items[this.active_article].data.splice(order,1);
                 this.saveAllData();
             },
-            folderRemove(order,nav){console.log(order,nav);
+            folderRemove(order,nav){
                 let vm = this, userdata = vm.filtered_data, data_to_delete, data_title;
                 switch(nav){
                     case 1: data_to_delete = userdata.folders[order]; data_title = data_to_delete.title; break;
@@ -258,7 +263,7 @@
                     vm.userdata.folders = [];
                 }
 
-                for ( let val of this.userdata.folders ) {
+                for ( let val of vm.userdata.folders ) {
                     if (val.title.toLowerCase().indexOf(vm.search_term) > -1) {
                         heap = [...heap, val]
                     } else {
@@ -276,7 +281,7 @@
                         }
                     }
                 }
-
+                console.log(13);
                 result.folders = heap;
 
                 vm.no_results = !result.folders.length;
@@ -286,85 +291,22 @@
             current_opened_article: function(){
                 let vm = this;
                 return (
-                    vm.filtered_data.folders.length ?
-                    vm.filtered_data.folders[vm.active_tab].items[vm.active_article] :
+                    vm.filtered_data.folders.length &&
+                    vm.filtered_data.folders[vm.active_tab] &&
+                    vm.filtered_data.folders[vm.active_tab].items ?
+                        vm.filtered_data.folders[vm.active_tab].items[vm.active_article] :
                         null
                 )
             }
         },
 
-        mounted: function(){
-            // let vm = this;
-
-            // let fakejson = {
-            //     "folders" : [
-            //         {
-            //             "title" : "Health Info",
-            //             "items" : [
-            //                 {
-            //                     "caption" : "Weight",
-            //                     "description" : "W123 Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit",
-            //                     "data" : [
-            //                         { "date" : "2016-02-08", "value": "86.4" },
-            //                         { "date" : "2016-09-09", "value": "84" },
-            //                         { "date" : "2016-07-10", "value": "83.9" },
-            //                         { "date" : "2016-08-01", "value": "84.2" }
-            //                     ],
-            //                     "unit" : "kg",
-            //                     "normal_value" : null
-            //                 },
-            //                 {
-            //                     "caption" : "Haemoglobin",
-            //                     "description" : "H123 Hhhh Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit",
-            //                     "data" : [
-            //                         { "date" : "2016-11-08", "value": "114" },
-            //                         { "date" : "2016-11-14", "value": "112" },
-            //                         { "date" : "2016-12-01", "value": "100" },
-            //                         { "date" : "2016-12-18", "value": "101" }
-            //                     ],
-            //                     "unit" : "M",
-            //                     "normal_value" : {
-            //                         "min": "110",
-            //                         "max": "113"
-            //                     }
-            //                 }
-            //             ]
-            //         },
-            //         {
-            //             "title" : "Other Info",
-            //             "items" : []
-            //         },
-            //         {
-            //             "title" : "Other Info 2",
-            //             "items" : [
-            //                 {
-            //                     "caption" : "Blood pressure",
-            //                     "description" : "Bp 123 Bbb Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit",
-            //                     "data" : [
-            //                         { "date" : "2016-06-08", "value": "100/90" },
-            //                         { "date" : "2016-07-08", "value": "110/95" },
-            //                         { "date" : "2016-10-10", "value": "140/120" },
-            //                         { "date" : "2016-11-01", "value": "105/75" }
-            //                     ],
-            //                     "unit" : "xxx",
-            //                     "normal_value" : {
-            //                         "text" : "120/80"
-            //                     }
-            //                 }
-            //             ]
-            //         }
-            //     ]
-            // };
-
-            // while (!this.$store.getters.get_current_user_dataset) {
-            //     this.$set(vm, 'userdata', this.$store.getters.get_current_user_dataset); // Should get data from backend
-            // }
-
+        beforeUpdate: function(){
+            let vm = this;
+            vm.userdata = this.$store.getters.get_current_user_dataset;
         },
         beforeMount: function(){
             let vm = this;
             vm.show_class = 1;
-
         },
     }
 

@@ -100,7 +100,9 @@ const store = new Vuex.Store({
             return state.current_user.uid;
         },
         get_current_user_dataset: state => {
-            return state.current_user.dataset;
+            return state.current_user.dataset ?
+                state.current_user.dataset :
+                {'folders':[]};
         }
     }
 });
