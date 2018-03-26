@@ -2,7 +2,7 @@ module.exports = {
   lintOnSave: true,
   configureWebpack: {
     output: {
-       path: __dirname + "/gh-pages"
+       path: __dirname + "/docs"
     }
   }
 };
