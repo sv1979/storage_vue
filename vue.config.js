@@ -1,3 +1,8 @@
 module.exports = {
-  lintOnSave: true
-}
+  lintOnSave: true,
+  configureWebpack: {
+    output: {
+       path: __dirname + "/docs"
+    }
+  }
+};
