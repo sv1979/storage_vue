@@ -2,7 +2,7 @@
   "name": "mystorage2",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://sv1979.github.io/storage_vue_public/",
+  "homepage": "https://sv1979.github.io/storage_vue",
   "scripts": {
     "serve": "vue-cli-service serve --open",
     "build": "vue-cli-service build",
