@@ -16,7 +16,7 @@
                 <button class="atl__button" type="reset" title="Reset form">
                     <font-awesome-icon :icon="['fal','times']" />
                 </button>
-                <button class="atl__button" type="submit" v-on:click="saveLine">Save
+                <button class="atl__button" type="submit" v-on:click.prevent="saveLine">Save
                     <font-awesome-icon :icon="['fal','save']" />
                 </button>
                 <button class="atl__button" v-if="show_reorder && cell_order > 0" v-on:click.prevent="lineUp" title="Move Up">
