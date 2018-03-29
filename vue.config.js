@@ -1,5 +1,8 @@
 module.exports = {
   lintOnSave: true,
+    devServer: {
+      port: 8088
+    },
   configureWebpack: {
     output: {
        path: __dirname + "/docs",
