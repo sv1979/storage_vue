@@ -9,7 +9,6 @@
 
     import IntroForm from './components/IntroForm'
     import AppInside from './components/AppInside'
-    // import './db.js'
 
     export default {
         name: 'app',

@@ -8,7 +8,8 @@
       }]">
         <aside class="mv_aside">
             <div class="subnav_inner">
-                <draggable v-if="filtered_data.folders.length" v-model="filtered_data.folders" @end="saveNewPositions">
+                <draggable v-if="filtered_data.folders.length" v-model="filtered_data.folders"
+                           @end="saveNewPositions"><!--@start="screenMore600"-->
                     <NavItem v-for="(item,index) in filtered_data.folders"  v-bind:key=index v-bind:navItem="item"
                              v-bind:order="index" :nav_index="1" v-bind:edit_nav="edit_nav"
                              :active_tab="active_tab" :active_article="active_article"
@@ -82,7 +83,7 @@
                                        v-bind:key="index" v-bind:activeArticleDataItem="item" v-bind:unit="active_article_data.unit"
                                        v-bind:normal_value="active_article_data.normal_value"
                                        v-bind:order="index" :lastloop="index===active_article_data.data.length - 1"
-                                       @save_line="saveLine" @line_up="lineUp" @line_down="lineDown" @line_remove="lineRemove"
+                                       @save_line="saveLine" @line_remove="lineRemove"
                                        />
                         </draggable>
 
@@ -151,12 +152,6 @@
             saveLine(date,value,order){
                 this.$emit('save_line', date,value,order);
             },
-            lineUp(order){
-                this.$emit('line_up', order);
-            },
-            lineDown(order){
-                this.$emit('line_down', order);
-            },
             lineRemove(order){
                 this.$emit('line_remove', order);
                 this.$forceUpdate();
@@ -166,7 +161,7 @@
             },
             saveNewPositions: function(){
                 this.$emit('save_all_data');
-                this.$forceUpdate();
+                // this.$forceUpdate();
             },
             editNav: function(order){
                 switch(order){
@@ -202,7 +197,9 @@
             draggable
         },
         computed: {
-
+            screenMore600() {
+                return this.$mq.resize && this.$mq.above(600)
+            }
         },
         mounted: function(){
 

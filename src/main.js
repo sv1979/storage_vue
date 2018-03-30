@@ -20,9 +20,10 @@ import faChevronDoubleDown from '@fortawesome/fontawesome-pro-light/faChevronDou
 import faTrashAlt from '@fortawesome/fontawesome-pro-light/faTrashAlt'
 import faSlidersH from '@fortawesome/fontawesome-pro-light/faSlidersH'
 import faSignOut from '@fortawesome/fontawesome-pro-light/faSignOut'
+import faHome from '@fortawesome/fontawesome-pro-light/faHome'
 
 fontawesome.library.add(faSearch, faPlus, faUndo, faSave, faTimes, faCircle, faAngleRight, faAngleDoubleRight, faAngleDoubleLeft, faPencil,
-    faChevronDoubleUp, faChevronDoubleDown, faTrashAlt, faSlidersH, faSignOut);
+    faChevronDoubleUp, faChevronDoubleDown, faTrashAlt, faSlidersH, faSignOut, faHome);
 Vue.use(FontAwesomeIcon);
 Vue.component('font-awesome-icon', FontAwesomeIcon);
 Vue.component('font-awesome-layers', FontAwesomeLayers);
@@ -67,7 +68,10 @@ const store = new Vuex.Store({
             if(current_user.dataset !== null) {
                 commit("set_current_user_dataset",current_user.dataset )
             }
-        }
+        },
+        set_user_dataset: ({commit}, dataset) => {
+            commit("set_current_user_dataset",dataset )
+        },
     },
     mutations: {
         change_interface(state, i_id) {

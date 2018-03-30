@@ -4,11 +4,13 @@
         <MainHeader :show_class=show_class :show_form=show_form
                     :userpic=$store.getters.get_current_user_pic
                     :search_t=search_term :no_results=no_results
-                    @searchData="lookForData" @navBack="goBack" @clean_user_data="cleanUserData" ref="mainHeaderComponent"/>
+                    :active_tab_header=active_tab_header :active_article_header=active_article_header
+                    @searchData="lookForData" @navBack="goBack" @navHome="goHome"
+                    @clean_user_data="cleanUserData" ref="mainHeaderComponent"/>
         <MainBody :show_class=show_class :filtered_data=filtered_data :edit_mode=edit_mode
                   :active_tab=active_tab :active_article=active_article :active_article_data=current_opened_article
                   @setTab="changeActiveTab" @setArticle="changeActiveArticle" @save_line="saveLine"
-                  @save_item = "saveItem" @save_element="saveElement" @line_up="lineUp" @line_down="lineDown"
+                  @save_item = "saveItem" @save_element="saveElement"
                   @line_remove="lineRemove" @save_all_data="saveAllData" @remove_folder="folderRemove"
                   @save_table_settings="saveTableSettings" @save_nav_item="save_nav_item" ref="mainBodyComponent" />
     </div>
@@ -58,17 +60,14 @@
                 this.$refs.mainBodyComponent.tabSwitch(true);
             },
             saveItem(text,level){
-                let vm = this, userdata = vm.filtered_data;
-
+                let userdata = this.userdata;
+                console.log(userdata.folders);
                 switch(level){
                     case 1 :
-                        this.$set(
-                            userdata.folders,
-                            userdata.folders ? userdata.folders.length : 0,
-                            { title: text, items: [] }
-                            );
+                        userdata.folders = [...userdata.folders,{ title: text, items: [] }];
                         this.active_tab = userdata.folders.length - 1;
                         this.active_article = 0;
+                        console.log(userdata.folders);
                         break;
                     case 2:
                         if (!userdata.folders[this.active_tab].items){
@@ -125,35 +124,13 @@
                 }
                 this.saveAllData();
             },
-            lineUp(order){
-                let vm = this, userdata = vm.filtered_data;
-
-                if(order){
-                    let data_temp = this.swap(userdata.folders[vm.active_tab].items[vm.active_article].data, order-1, order);
-
-                    this.userdata.folders[vm.active_tab].items[vm.active_article].data =
-                        Object.assign([], this.userdata.folders[vm.active_tab].items[vm.active_article].data,data_temp);
-                }
-                this.saveAllData();
-            },
-            lineDown(order){
-                let vm = this, userdata = vm.filtered_data;
-
-                if( order < userdata.folders[vm.active_tab].items[vm.active_article].data.length - 1 ){
-                    let data_temp = this.swap(userdata.folders[vm.active_tab].items[vm.active_article].data, order+1, order);
-
-                    this.userdata.folders[vm.active_tab].items[vm.active_article].data =
-                        Object.assign([], this.userdata.folders[vm.active_tab].items[vm.active_article].data,data_temp);
-                }
-                this.saveAllData();
-            },
             lineRemove(order){
                 let vm = this, userdata = vm.filtered_data;
                 userdata.folders[this.active_tab].items[this.active_article].data.splice(order,1);
                 this.saveAllData();
             },
             folderRemove(order,nav){
-                let vm = this, userdata = vm.filtered_data, data_to_delete, data_title;
+                let vm = this, userdata = vm.userdata, data_to_delete, data_title;
                 switch(nav){
                     case 1: data_to_delete = userdata.folders[order]; data_title = data_to_delete.title; break;
                     case 2: data_to_delete = userdata.folders[vm.active_tab].items[order]; data_title = data_to_delete.caption; break;
@@ -218,16 +195,20 @@
                 this.saveAllData();
             },
             saveAllData(){
-                let vm = this, new_data = {};
-                new_data = vm.filtered_data;
-                this.userdata = new_data;
+                let vm = this;
 
                 this.$FireBaseDb.ref('userdata/' + this.$store.getters.get_current_user_uid).set({
                     folders: this.userdata.folders
                 });
+                this.$store.dispatch('set_user_dataset', {folders: this.userdata.folders});
+                // vm.userdata = this.$store.getters.get_current_user_dataset;
+                vm.$forceUpdate();
             },
             cleanUserData(){
                 this.$store.dispatch('set_current_user_action', {});
+            },
+            goHome(){
+                this.show_class = 1;
             },
             goBack(){
                 this.show_class = this.show_class - 1;
@@ -254,59 +235,88 @@
         },
         computed: {
             filtered_data: function(){
-                let vm = this, result = {}, heap = [];
+                // let vm = this, result = {}, heap = [];
+                //
+                // if(vm.userdata === null) {
+                //     vm.userdata = this.$store.getters.get_current_user_dataset;
+                // }
+                // if(vm.userdata.folders === null) {
+                //     vm.userdata.folders = [];
+                // }
+                //
+                // for ( let val of vm.userdata.folders ) {
+                //     if (val.title.toLowerCase().indexOf(vm.search_term) > -1) {
+                //         heap = [...heap, val]
+                //     } else if (!val.items) {
+                //         heap = [...heap];
+                //     }
+                //     else {
+                //         let subitems = val.items.filter((i)=>{
+                //             return (i.caption.toLowerCase().indexOf(vm.search_term) > -1 ||
+                //                 i.description.toLowerCase().indexOf(vm.search_term) > -1)
+                //         });
+                //
+                //         if (subitems.length){
+                //             let newobject = {
+                //                 title: val.title,
+                //                 items: subitems
+                //             };
+                //             heap = [...heap, newobject]
+                //         }
+                //     }
+                // }
+                // result.folders = heap;
+                //
+                // vm.no_results = !result.folders.length;
 
-                if(vm.userdata === null) {
-                    vm.userdata = this.$store.getters.get_current_user_dataset;
-                }
-                if(vm.userdata.folders === null) {
-                    vm.userdata.folders = [];
-                }
-
-                for ( let val of vm.userdata.folders ) {
-                    if (val.title.toLowerCase().indexOf(vm.search_term) > -1) {
-                        heap = [...heap, val]
-                    } else {
-                        let subitems = val.items.filter((i)=>{
-                            return (i.caption.toLowerCase().indexOf(vm.search_term) > -1 ||
-                                i.description.toLowerCase().indexOf(vm.search_term) > -1)
-                        });
-
-                        if (subitems.length){
-                            let newobject = {
-                                title: val.title,
-                                items: subitems
-                            };
-                            heap = [...heap, newobject]
-                        }
-                    }
-                }
-                console.log(13);
-                result.folders = heap;
-
-                vm.no_results = !result.folders.length;
-
-                return vm.no_results ? vm.userdata : result
+                // return vm.no_results ? vm.userdata : result
+                return this.userdata
             },
             current_opened_article: function(){
                 let vm = this;
                 return (
+                    vm.filtered_data &&
+                    vm.filtered_data.folders &&
                     vm.filtered_data.folders.length &&
                     vm.filtered_data.folders[vm.active_tab] &&
                     vm.filtered_data.folders[vm.active_tab].items ?
                         vm.filtered_data.folders[vm.active_tab].items[vm.active_article] :
                         null
                 )
-            }
-        },
+            },
+            active_tab_header: function(){
+                let vm = this;
+                return (
+                    vm.filtered_data &&
+                    vm.filtered_data.folders &&
+                    vm.filtered_data.folders.length &&
+                    vm.filtered_data.folders[vm.active_tab] &&
+                    vm.filtered_data.folders[vm.active_tab].title ?
+                        vm.filtered_data.folders[vm.active_tab].title :
+                        ''
+                )
 
+            },
+            active_article_header: function(){
+                let vm = this;
+                return (
+                    vm.filtered_data &&
+                    vm.filtered_data.folders &&
+                    vm.filtered_data.folders.length &&
+                    vm.filtered_data.folders[vm.active_tab] &&
+                    vm.filtered_data.folders[vm.active_tab].items ?
+                        vm.filtered_data.folders[vm.active_tab].items[vm.active_article].caption :
+                        ''
+                )
+
+            },
+        },
         beforeUpdate: function(){
-            let vm = this;
-            vm.userdata = this.$store.getters.get_current_user_dataset;
+            this.userdata = this.$store.getters.get_current_user_dataset;
         },
         beforeMount: function(){
-            let vm = this;
-            vm.show_class = 1;
+            this.show_class = 1;
+            this.userdata = this.$store.getters.get_current_user_dataset;
         },
     }
 

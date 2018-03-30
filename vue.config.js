@@ -6,7 +6,7 @@ module.exports = {
   configureWebpack: {
     output: {
        path: __dirname + "/docs",
-       publicPath: '/storage_vue/'
+       publicPath: '/storage_vue/' 
     }
   }
 };

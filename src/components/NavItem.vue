@@ -2,7 +2,8 @@
     <a href="#"
        v-on:click="set_active_tab"
        v-bind:class="{ active: is_active, editmode: show_form===true }">
-        <span v-html="navItem.title || navItem.caption" v-if="!show_form"></span>
+        <span
+              v-if="!show_form">{{ navItem.title||navItem.caption | truncate(12) }}</span>
         <font-awesome-icon :icon="[ 'fal', is_active ? 'angle-double-right' : 'angle-right' ]" v-if="!show_form" />
 
         <AddPiece button_text="A" v-bind:level="3" @edit_nav_piece = "editNavPiece" @hide_form="hideForm"
@@ -67,7 +68,11 @@
                 this.show_form = false;
             },
         },
-
+        filters: {
+            truncate: function(text, stop, clamp){
+                return text ? text.slice(0, stop) + (stop < text.length ? clamp || '...' : '') : ''
+            }
+        }
     }
 </script>
 <style>

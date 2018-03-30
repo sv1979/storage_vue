@@ -1,20 +1,22 @@
 <template>
     <div>
         <form action="" v-bind:class="['tef', show_form?'form_shown':'']">
-            <label v-if="show_form">Unit: <input type="text" v-model="this_unit" ref="itemunit"></label>
-            <label v-if="show_form">Min: <input type="number" v-model="this_min"></label>
-            <label v-if="show_form">Max: <input type="number" v-model="this_max"></label>
+            <label v-if="show_form"> <span>Unit:</span><input type="text" v-model="this_unit" ref="itemunit"></label>
+            <label v-if="show_form"> <span>Min:</span> <input type="number" v-model="this_min"></label>
+            <label v-if="show_form"> <span>Max:</span> <input type="number" v-model="this_max"></label>
 
-            <button class="tef__button" v-if="show_form" type="reset" title="Reset form">
-                <font-awesome-icon :icon="['fal','times']" />
-            </button>
-            <button type="submit" v-if="show_form" class="tef__button" v-on:click.prevent="saveTableSettings">
-                Save <font-awesome-icon :icon="['fal','save']" />
-            </button>
-            <button class="tef__button form_toggler" v-on:click.prevent="toggleForm()">
-                <font-awesome-icon :icon="['fal','sliders-h']" v-if="!show_form" />
-                <font-awesome-icon :icon="['fal','undo']" v-else />
-            </button>
+            <div class="buttons">
+                <button class="tef__button" v-if="show_form" type="reset" title="Reset form">
+                    <font-awesome-icon :icon="['fal','times']" />
+                </button>
+                <button type="submit" v-if="show_form" class="tef__button" v-on:click.prevent="saveTableSettings">
+                    Save <font-awesome-icon :icon="['fal','save']" />
+                </button>
+                <button class="tef__button form_toggler" v-on:click.prevent="toggleForm()">
+                    <font-awesome-icon :icon="['fal','sliders-h']" v-if="!show_form" />
+                    <font-awesome-icon :icon="['fal','undo']" v-else />
+                </button>
+            </div>
         </form>
     </div>
 </template>
@@ -84,13 +86,15 @@
 <style scoped>
     form {
         position: absolute;
-        right: 0;
-        top: -2rem;
+        right: .5rem;
+        top: -1.5rem;
         display: flex;
         justify-content: flex-end;
     }
     .form_shown {
         width: 100%;
+        position: relative;
+        margin-top: 3rem;
     }
     .form_toggler {
         align-self: flex-start;
@@ -99,5 +103,21 @@
         flex: 1 1 auto;
         border: none;
         background-color: rgba(200,200,200,.75);
+    }
+    .buttons {
+        display: flex;
+    }
+
+    @media screen and (max-width: 991px) {
+        .form_shown {
+            flex-direction: column;
+            padding: 0 .5rem 0;
+        }
+        label {
+            padding: 0;
+        }
+        .buttons button {
+            flex: 1;
+        }
     }
 </style>

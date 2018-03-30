@@ -98,4 +98,9 @@
     .in_footer textarea {
         min-height: 100px;
     }
+    @media screen and (max-width: 991px) {
+        form {
+            padding: 0;
+        }
+    }
 </style>

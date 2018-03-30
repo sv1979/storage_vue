@@ -13,21 +13,17 @@
                             :disabled="this.disabled_future" :value="initial_date"/>
                 <input type="text" v-model="this_val" ref="itemval" class="styled_input" required v-on:keypress.enter="saveLine"/>
 
-                <button class="atl__button" type="reset" title="Reset form">
-                    <font-awesome-icon :icon="['fal','times']" />
-                </button>
-                <button class="atl__button" type="submit" v-on:click.prevent="saveLine">Save
-                    <font-awesome-icon :icon="['fal','save']" />
-                </button>
-                <button class="atl__button" v-if="show_reorder && cell_order > 0" v-on:click.prevent="lineUp" title="Move Up">
-                    <font-awesome-icon :icon="['fal','chevron-double-up']" />
-                </button>
-                <button class="atl__button " v-if="show_reorder && !lastloop" v-on:click.prevent="lineDown" title="Move Down">
-                    <font-awesome-icon :icon="['fal','chevron-double-down']" />
-                </button>
-                <button class="atl__button danger_bg" v-if="show_reorder" v-on:click.prevent="lineRemove" title="Remove">
-                    <font-awesome-icon :icon="['fal','trash-alt']" />
-                </button>
+                <div class="buttons">
+                    <button class="atl__button" type="reset" title="Reset form">
+                        <font-awesome-icon :icon="['fal','times']" />
+                    </button>
+                    <button class="atl__button" type="submit" v-on:click.prevent="saveLine">Save
+                        <font-awesome-icon :icon="['fal','save']" />
+                    </button>
+                    <button class="atl__button danger_bg" v-if="show_reorder" v-on:click.prevent="lineRemove" title="Remove">
+                        <font-awesome-icon :icon="['fal','trash-alt']" />
+                    </button>
+                </div>
             </div>
         </form>
     </div>
@@ -93,14 +89,6 @@
                 }
             },
             hideForm: function(){
-                this.$emit('hide_form');
-            },
-            lineUp: function(){
-                this.$emit('line_up',this.cellorder);
-                this.$emit('hide_form');
-            },
-            lineDown: function(){
-                this.$emit('line_down', this.cellorder);
                 this.$emit('hide_form');
             },
             lineRemove: function(){

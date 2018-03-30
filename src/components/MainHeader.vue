@@ -1,22 +1,29 @@
 <template>
     <header class="mv_header" v-bind:class="{ expanded : show_form }">
-        <div class="back_link" v-on:click="go_back()" v-if="show_class > 1">
-            <font-awesome-icon :icon="['fal','angle-double-left']" />
+        <div class="back_link"  v-if="show_class > 1">
+            <a href="#" class="" v-on:click="go_home()">
+                <font-awesome-icon :icon="['fal','home']" />
+            </a>
+            <span class="breadcrumb" v-on:click="go_back()">{{ active_tab_header| truncate(9) }}</span>
+            <a href="#" class="" v-on:click="go_back()" v-if="show_class > 2">
+                <font-awesome-icon :icon="['fal','angle-double-left']" />
+            </a>
+            <span class="breadcrumb" v-if="show_class > 2">{{ active_article_header| truncate(9) }}</span>
         </div>
-        <div class="search_toggle" v-on:click="change_form_show_status" v-bind:class="['search_toggle', show_form?'form_shown':'']">
-            <font-awesome-layers>
-                <font-awesome-icon :icon="['fal','circle']" transform="grow-2" />
-                <font-awesome-icon :icon="['fal','search']" transform="shrink-8" />
-            </font-awesome-layers>
-        </div>
-        <form v-show="form_shown || ($mq.resize && $mq.above('768px'))">
-            <input type="search" placeholder="Search..." v-model="this_search">
-            <button type="submit"
-                    v-on:click.prevent="makeSearch()"><font-awesome-icon :icon="['fal','search']" /></button>
-            <button type="reset" v-show="this_search"
-                    v-on:click.prevent="resetSearch()">&times;</button>
-            <span class="no_res" v-if="no_results" v-on:click="resetSearch()">No results</span>
-        </form>
+        <!--<div class="search_toggle" v-on:click="change_form_show_status" v-bind:class="['search_toggle', show_form?'form_shown':'']">-->
+            <!--<font-awesome-layers>-->
+                <!--<font-awesome-icon :icon="['fal','circle']" transform="grow-2" />-->
+                <!--<font-awesome-icon :icon="['fal','search']" transform="shrink-8" />-->
+            <!--</font-awesome-layers>-->
+        <!--</div>-->
+        <!--<form v-show="form_shown || ($mq.resize && $mq.above('768px'))">-->
+            <!--<input type="search" placeholder="Search..." v-model="this_search">-->
+            <!--<button type="submit"-->
+                    <!--v-on:click.prevent="makeSearch()"><font-awesome-icon :icon="['fal','search']" /></button>-->
+            <!--<button type="reset" v-show="this_search"-->
+                    <!--v-on:click.prevent="resetSearch()">&times;</button>-->
+            <!--<span class="no_res" v-if="no_results" v-on:click="resetSearch()">No results</span>-->
+        <!--</form>-->
 
         <div class="usercorner">
             <div class="username">
@@ -50,7 +57,9 @@
             show_form:Boolean,
             search_t: String,
             no_results: Boolean,
-            userpic: String
+            userpic: String,
+            active_tab_header: String,
+            active_article_header: String
         },
         methods: {
             makeSearch: function(){
@@ -64,8 +73,13 @@
                 vm.this_search = '';
                 vm.$emit('searchData', '');
             },
+            go_home: function(){
+                this.$emit('navHome');
+            },
             go_back: function(){
-                this.$emit('navBack');
+                if (this.show_class > 2) {
+                    this.$emit('navBack');
+                }
             },
             change_form_show_status(){
                 this.form_shown = !this.form_shown
@@ -100,5 +114,8 @@
 <style scoped>
     .usercorner a {
         padding-left: 1rem;
+    }
+    .breadcrumb {
+        font-size: .8rem;
     }
 </style>
