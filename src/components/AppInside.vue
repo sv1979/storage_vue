@@ -223,15 +223,6 @@
             jsUcfirst(string) {
                 return string.charAt(0).toUpperCase() + string.slice(1);
             },
-            swap(obj,order1,order2){
-                let a = obj[order2];
-                obj[order2] = obj[order1];
-                obj[order1] = a;
-                return obj;
-            },
-            componentDidMount(){
-
-            }
         },
         computed: {
             filtered_data: function(){
@@ -295,7 +286,6 @@
                         vm.filtered_data.folders[vm.active_tab].title :
                         ''
                 )
-
             },
             active_article_header: function(){
                 let vm = this;

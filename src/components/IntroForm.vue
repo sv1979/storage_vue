@@ -8,7 +8,7 @@
                v-on:click.prevent="show_login = !show_login">Register</a>
         </div>
 
-        <form action="#" class="login_form" v-if="show_login">
+        <form action="#" class="login_form" v-if="show_login" id="login_form">
             <input type="text" name="username" placeholder="Email"
                    v-model.trim="username">
             <input type="password" name="password" placeholder="Password" v-model.trim="password">
